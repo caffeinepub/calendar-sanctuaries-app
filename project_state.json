@@ -1,0 +1,138 @@
+{
+  "schemaVersion": "1.0.0",
+  "projectStateVersion": 9,
+  "summary": "A 3D fighting game where the player controls a character named UG who battles against enemies named Sukuna. The game features on-screen touch/click controls (punch icon, kick icon, movement buttons, etc.) for players without a keyboard.",
+  "architectural_notes": [],
+  "known_issues": [],
+  "isFixRequest": false,
+  "existing_features": [
+    {
+      "id": "feature-build-a-full-calendar-ui-that-displays-the-current-date-the-current-week-the-current-month-with-a-grid-of-days-and-the-current-year-allow-navigation-between-months-and-years",
+      "title": "Build a full calendar UI that displays the current date, the current week, the current month with a grid of days, and the current year. Allow navigation between months and years.",
+      "reqIds": [
+        "REQ-2"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-display-sanctuaries-special-holy-days-fetched-from-the-backend-directly-on-the-calendar-grid-days-with-sanctuaries-should-be-visually-distinguished-and-clicking-on-such-a-day-should-show-the-sanctuary-name-and-description",
+      "title": "Display sanctuaries (special/holy days) fetched from the backend directly on the calendar grid. Days with sanctuaries should be visually distinguished, and clicking on such a day should show the sanctuary name and description.",
+      "reqIds": [
+        "REQ-3"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-apply-a-rich-cohesive-visual-theme-to-the-application-elegant-and-spiritual-in-feel-using-warm-earthy-tones-deep-amber-ivory-soft-gold-serif-inspired-typography-and-a-clean-structured-layout-that-suits-a-calendar-of-sacred-dates",
+      "title": "Apply a rich, cohesive visual theme to the application — elegant and spiritual in feel, using warm earthy tones (deep amber, ivory, soft gold), serif-inspired typography, and a clean structured layout that suits a calendar of sacred dates.",
+      "reqIds": [
+        "REQ-4"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-generate-and-display-a-decorative-banner-image-for-the-app-header-featuring-a-calendar-motif-with-soft-golden-celestial-elements-sun-moon-stars-on-a-warm-parchment-background",
+      "title": "Generate and display a decorative banner image for the app header featuring a calendar motif with soft golden celestial elements (sun, moon, stars) on a warm parchment background.",
+      "reqIds": [
+        "REQ-5"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-create-a-2d-side-scrolling-fighting-game-where-the-player-controls-a-character-named-ug-the-game-should-feature-multiple-enemy-characters-all-named-sukuna-that-the-player-battles-sequentially-or-simultaneously-the-game-scene-should-display-both-characters-on-screen-with-distinct-visual-representations",
+      "title": "Create a 2D side-scrolling fighting game where the player controls a character named UG. The game should feature multiple enemy characters all named Sukuna that the player battles sequentially or simultaneously. The game scene should display both characters on screen with distinct visual representations.",
+      "reqIds": [
+        "REQ-6"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-player-controls-for-ug-keyboard-arrow-keys-or-wasd-for-movement-left-right-jump-and-dedicated-attack-keys-e-g-a-or-z-for-punch-s-or-x-for-kick-ug-should-be-able-to-move-toward-and-away-from-sukuna-and-perform-basic-attacks",
+      "title": "Implement player controls for UG: keyboard arrow keys or WASD for movement (left, right, jump), and dedicated attack keys (e.g., A or Z for punch, S or X for kick). UG should be able to move toward and away from Sukuna and perform basic attacks.",
+      "reqIds": [
+        "REQ-7"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-health-bars-for-both-ug-and-sukuna-displayed-at-the-top-of-the-screen-ug-loses-health-when-hit-by-sukuna-s-attacks-sukuna-loses-health-when-hit-by-ug-s-attacks-when-sukuna-s-health-reaches-zero-the-next-sukuna-enemy-appears-or-a-victory-screen-is-shown-when-ug-s-health-reaches-zero-a-game-over-screen-is-displayed",
+      "title": "Implement health bars for both UG and Sukuna displayed at the top of the screen. UG loses health when hit by Sukuna's attacks. Sukuna loses health when hit by UG's attacks. When Sukuna's health reaches zero, the next Sukuna enemy appears (or a victory screen is shown). When UG's health reaches zero, a game-over screen is displayed.",
+      "reqIds": [
+        "REQ-8"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-basic-ai-for-sukuna-enemies-each-sukuna-should-move-toward-ug-perform-attacks-at-close-range-and-react-to-being-hit-sukuna-should-attack-ug-periodically-causing-ug-to-lose-health-when-in-range",
+      "title": "Implement basic AI for Sukuna enemies: each Sukuna should move toward UG, perform attacks at close range, and react to being hit. Sukuna should attack UG periodically, causing UG to lose health when in range.",
+      "reqIds": [
+        "REQ-9"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-apply-a-bold-dramatic-visual-theme-to-the-fighting-game-dark-background-with-dynamic-lighting-effects-fiery-or-cursed-energy-particle-accents-to-match-sukuna-s-supernatural-theme-strong-sans-serif-typography-for-ui-elements-health-bars-round-counters-character-names-and-a-battle-arena-stage",
+      "title": "Apply a bold, dramatic visual theme to the fighting game — dark background with dynamic lighting effects, fiery or cursed-energy particle accents (to match Sukuna's supernatural theme), strong sans-serif typography for UI elements (health bars, round counters, character names), and a battle arena stage.",
+      "reqIds": [
+        "REQ-10"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-set-of-on-screen-touch-click-control-buttons-rendered-as-an-overlay-on-the-game-canvas-so-the-game-can-be-played-without-a-keyboard-the-control-layout-must-include-a-left-arrow-button-a-right-arrow-button-and-an-up-arrow-jump-button-for-movement-a-punch-button-with-a-fist-punch-icon-and-a-kick-button-with-a-kick-icon-each-button-must-trigger-the-same-game-actions-as-the-corresponding-keyboard-keys-left-right-jump-punch-kick-when-tapped-or-clicked-and-must-support-both-mousedown-mouseup-and-touchstart-touchend-events-so-the-action-is-held-for-the-duration-of-the-press",
+      "title": "Add a set of on-screen touch/click control buttons rendered as an overlay on the game canvas so the game can be played without a keyboard. The control layout must include: a left arrow button, a right arrow button, and an up arrow (jump) button for movement; a PUNCH button with a fist/punch icon; and a KICK button with a kick icon. Each button must trigger the same game actions as the corresponding keyboard keys (left/right/jump/punch/kick) when tapped or clicked, and must support both mousedown/mouseup and touchstart/touchend events so the action is held for the duration of the press.",
+      "reqIds": [
+        "REQ-11"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-replace-the-existing-2d-canvas-based-fightinggame-component-with-a-fully-3d-scene-built-using-three-js-and-react-three-fiber-the-scene-must-include-a-3d-battle-arena-ground-plane-with-visible-stage-boundaries-3d-character-meshes-for-ug-and-each-sukuna-enemy-dynamic-lighting-ambient-directional-point-lights-for-dramatic-effect-and-a-camera-that-follows-the-action-from-a-fixed-third-person-side-perspective",
+      "title": "Replace the existing 2D canvas-based FightingGame component with a fully 3D scene built using Three.js and React Three Fiber. The scene must include a 3D battle arena (ground plane with visible stage boundaries), 3D character meshes for UG and each Sukuna enemy, dynamic lighting (ambient + directional/point lights for dramatic effect), and a camera that follows the action from a fixed third-person side perspective.",
+      "reqIds": [
+        "REQ-12"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-port-all-existing-game-logic-player-movement-jumping-gravity-attack-hitboxes-enemy-ai-health-bar-state-combat-system-and-game-status-transitions-victory-game-over-to-work-with-3d-positions-x-y-z-in-the-react-three-fiber-scene-retain-keyboard-controls-and-the-existing-on-screen-touch-click-control-overlay-onscreencontrols-without-functional-changes",
+      "title": "Port all existing game logic — player movement, jumping, gravity, attack hitboxes, enemy AI, health bar state, combat system, and game status transitions (victory/game-over) — to work with 3D positions (X, Y, Z) in the React Three Fiber scene. Retain keyboard controls and the existing on-screen touch/click control overlay (OnScreenControls) without functional changes.",
+      "reqIds": [
+        "REQ-13"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-3d-particle-effects-for-attacks-and-hits-replace-the-existing-2d-canvas-particle-system-with-three-js-particle-sprites-or-instanced-meshes-fiery-cursed-energy-visual-accents-should-appear-at-the-point-of-impact-when-a-hit-lands-on-either-character-consistent-with-the-existing-bold-dramatic-theme",
+      "title": "Add 3D particle effects for attacks and hits — replace the existing 2D canvas particle system with Three.js particle sprites or instanced meshes. Fiery/cursed-energy visual accents should appear at the point of impact when a hit lands on either character, consistent with the existing bold dramatic theme.",
+      "reqIds": [
+        "REQ-14"
+      ],
+      "version": 1
+    }
+  ],
+  "new_feature_requests": [
+    {
+      "id": "AR-4",
+      "summary": "Player character named UG who fights against multiple enemy characters named Sukuna",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-5",
+      "summary": "Add on-screen touch/click controls with icons (punch, kick, movement buttons) so the game can be played without a keyboard",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-6",
+      "summary": "Convert the fighting game from 2D to 3D form",
+      "reqIds": [],
+      "status": "pending"
+    }
+  ],
+  "gameProjectType": "3d",
+  "projectName": "Calendar & Sanctuaries App",
+  "clarification_mode": "instant",
+  "clarification_rounds": 0
+}

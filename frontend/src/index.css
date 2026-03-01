@@ -1,0 +1,150 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --radius: 0.25rem;
+
+    /* Dark fighting game palette */
+    --background: 0.08 0.02 280;
+    --foreground: 0.95 0.01 280;
+
+    --card: 0.12 0.03 280;
+    --card-foreground: 0.95 0.01 280;
+
+    --popover: 0.12 0.03 280;
+    --popover-foreground: 0.95 0.01 280;
+
+    --primary: 0.55 0.22 290;
+    --primary-foreground: 0.98 0.01 280;
+
+    --secondary: 0.18 0.04 280;
+    --secondary-foreground: 0.85 0.02 280;
+
+    --muted: 0.18 0.03 280;
+    --muted-foreground: 0.55 0.05 280;
+
+    --accent: 0.45 0.18 290;
+    --accent-foreground: 0.98 0.01 280;
+
+    --destructive: 0.55 0.22 25;
+    --destructive-foreground: 0.98 0.01 0;
+
+    --border: 0.25 0.06 280;
+    --input: 0.20 0.04 280;
+    --ring: 0.55 0.22 290;
+
+    --chart-1: 0.55 0.22 290;
+    --chart-2: 0.55 0.22 25;
+    --chart-3: 0.65 0.18 200;
+    --chart-4: 0.75 0.18 80;
+    --chart-5: 0.65 0.22 340;
+
+    --sidebar: 0.10 0.03 280;
+    --sidebar-foreground: 0.95 0.01 280;
+    --sidebar-primary: 0.55 0.22 290;
+    --sidebar-primary-foreground: 0.98 0.01 280;
+    --sidebar-accent: 0.18 0.04 280;
+    --sidebar-accent-foreground: 0.85 0.02 280;
+    --sidebar-border: 0.25 0.06 280;
+    --sidebar-ring: 0.55 0.22 290;
+  }
+
+  .dark {
+    --background: 0.06 0.02 280;
+    --foreground: 0.95 0.01 280;
+
+    --card: 0.10 0.03 280;
+    --card-foreground: 0.95 0.01 280;
+
+    --popover: 0.10 0.03 280;
+    --popover-foreground: 0.95 0.01 280;
+
+    --primary: 0.60 0.24 290;
+    --primary-foreground: 0.98 0.01 280;
+
+    --secondary: 0.15 0.04 280;
+    --secondary-foreground: 0.85 0.02 280;
+
+    --muted: 0.15 0.03 280;
+    --muted-foreground: 0.55 0.05 280;
+
+    --accent: 0.45 0.18 290;
+    --accent-foreground: 0.98 0.01 280;
+
+    --destructive: 0.55 0.22 25;
+    --destructive-foreground: 0.98 0.01 0;
+
+    --border: 0.22 0.06 280;
+    --input: 0.18 0.04 280;
+    --ring: 0.60 0.24 290;
+
+    --chart-1: 0.60 0.24 290;
+    --chart-2: 0.60 0.24 25;
+    --chart-3: 0.65 0.18 200;
+    --chart-4: 0.75 0.18 80;
+    --chart-5: 0.65 0.22 340;
+
+    --sidebar: 0.08 0.03 280;
+    --sidebar-foreground: 0.95 0.01 280;
+    --sidebar-primary: 0.60 0.24 290;
+    --sidebar-primary-foreground: 0.98 0.01 280;
+    --sidebar-accent: 0.15 0.04 280;
+    --sidebar-accent-foreground: 0.85 0.02 280;
+    --sidebar-border: 0.22 0.06 280;
+    --sidebar-ring: 0.60 0.24 290;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Rajdhani', 'system-ui', sans-serif;
+    background-color: #080012;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Bebas Neue', 'Impact', 'Arial Black', sans-serif;
+  }
+}
+
+@layer components {
+  .game-title {
+    font-family: 'Bebas Neue', 'Impact', 'Arial Black', sans-serif;
+    letter-spacing: 0.1em;
+  }
+
+  .game-vs {
+    font-family: 'Bebas Neue', 'Impact', 'Arial Black', sans-serif;
+    letter-spacing: 0.3em;
+  }
+
+  .game-name-ug {
+    font-family: 'Bebas Neue', 'Impact', 'Arial Black', sans-serif;
+    color: #44aaff;
+    text-shadow: 0 0 10px rgba(68, 170, 255, 0.7);
+    letter-spacing: 0.2em;
+  }
+
+  .game-name-sukuna {
+    font-family: 'Bebas Neue', 'Impact', 'Arial Black', sans-serif;
+    color: #ff4466;
+    text-shadow: 0 0 10px rgba(255, 68, 102, 0.7);
+    letter-spacing: 0.2em;
+  }
+
+  .game-btn {
+    font-family: 'Bebas Neue', 'Impact', 'Arial Black', sans-serif;
+    letter-spacing: 0.15em;
+    cursor: pointer;
+  }
+
+  .game-bg {
+    background: radial-gradient(ellipse at center top, #1a0030 0%, #080012 60%, #000008 100%);
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "kind": "feature_evidence_report",
+  "features": [
+    {
+      "featureId": "feature-replace-the-existing-2d-canvas-based-fightinggame-component-with-a-fully-3d-scene-built-using-three-js-and-react-three-fiber-the-scene-must-include-a-3d-battle-arena-ground-plane-with-visible-stage-boundaries-3d-character-meshes-for-ug-and-each-sukuna-enemy-dynamic-lighting-ambient-directional-point-lights-for-dramatic-effect-and-a-camera-that-follows-the-action-from-a-fixed-third-person-side-perspective",
+      "featureTitle": "Replace the existing 2D canvas-based FightingGame component with a fully 3D scene built using Three.js and React Three Fiber. The scene must include a 3D battle arena (ground plane with visible stage boundaries), 3D character meshes for UG and each Sukuna enemy, dynamic lighting (ambient + directional/point lights for dramatic effect), and a camera that follows the action from a fixed third-person side perspective.",
+      "files": [
+        "frontend/src/components/Character3D.tsx",
+        "frontend/src/components/FightingGame.tsx",
+        "frontend/src/components/Scene3D.tsx"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-12"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-port-all-existing-game-logic-player-movement-jumping-gravity-attack-hitboxes-enemy-ai-health-bar-state-combat-system-and-game-status-transitions-victory-game-over-to-work-with-3d-positions-x-y-z-in-the-react-three-fiber-scene-retain-keyboard-controls-and-the-existing-on-screen-touch-click-control-overlay-onscreencontrols-without-functional-changes",
+      "featureTitle": "Port all existing game logic — player movement, jumping, gravity, attack hitboxes, enemy AI, health bar state, combat system, and game status transitions (victory/game-over) — to work with 3D positions (X, Y, Z) in the React Three Fiber scene. Retain keyboard controls and the existing on-screen touch/click control overlay (OnScreenControls) without functional changes.",
+      "files": [
+        "frontend/src/components/FightingGame.tsx",
+        "frontend/src/components/Scene3D.tsx",
+        "frontend/src/types/game.ts",
+        "frontend/src/utils/combatSystem.ts",
+        "frontend/src/utils/enemyAI.ts",
+        "frontend/src/utils/gamePhysics.ts"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-13"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-add-3d-particle-effects-for-attacks-and-hits-replace-the-existing-2d-canvas-particle-system-with-three-js-particle-sprites-or-instanced-meshes-fiery-cursed-energy-visual-accents-should-appear-at-the-point-of-impact-when-a-hit-lands-on-either-character-consistent-with-the-existing-bold-dramatic-theme",
+      "featureTitle": "Add 3D particle effects for attacks and hits — replace the existing 2D canvas particle system with Three.js particle sprites or instanced meshes. Fiery/cursed-energy visual accents should appear at the point of impact when a hit lands on either character, consistent with the existing bold dramatic theme.",
+      "files": [
+        "frontend/src/components/FightingGame.tsx",
+        "frontend/src/components/ParticleSystem3D.tsx",
+        "frontend/src/types/game.ts",
+        "frontend/src/utils/combatSystem.ts"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-14"
+      ],
+      "confidence": "high"
+    }
+  ]
+}

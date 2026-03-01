@@ -1,0 +1,125 @@
+{
+  "kind": "implementation_plan",
+  "version": "1.0",
+  "title": "Convert fighting game from 2D canvas to 3D (Three.js / React Three Fiber)",
+  "requirements": [
+    {
+      "id": "REQ-12",
+      "summary": "Replace 2D canvas with 3D React Three Fiber scene including 3D arena, character meshes, lighting, and side-view camera",
+      "acceptanceCriteria": [
+        "The game renders inside a React Three Fiber Canvas replacing the old HTML5 canvas element.",
+        "UG and Sukuna are represented by distinct 3D meshes (e.g. box or capsule geometries with distinct colors/materials).",
+        "A 3D arena floor/stage is visible beneath the characters.",
+        "At least one dynamic light source illuminates the scene with noticeable shadow or shading.",
+        "Camera is positioned for a side-view perspective and keeps both characters visible."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/package.json",
+          "operation": "modify",
+          "description": "Add @react-three/fiber, @react-three/drei, and three as dependencies to enable 3D rendering with React Three Fiber"
+        },
+        {
+          "path": "frontend/src/components/FightingGame.tsx",
+          "operation": "modify",
+          "description": "Replace the HTML5 canvas element with a React Three Fiber Canvas component. Remove all 2D canvas rendering code (drawBackground, drawCharacter, drawHealthBar, drawParticles). Wrap the 3D scene content in the Canvas and keep the HTML overlay for health bars, game status UI, and OnScreenControls. Position the Canvas to fill the game container while preserving the existing layout structure"
+        },
+        {
+          "path": "frontend/src/components/Scene3D.tsx",
+          "operation": "create",
+          "description": "Create a React Three Fiber scene component that renders the 3D battle arena. Include a ground plane mesh (PlaneGeometry) positioned at y=0 with a dark material, visible stage boundaries (box outlines or edge markers), an ambientLight for base illumination, and a directional or point light for dramatic shadows. Position the camera at a fixed side-view angle (e.g., position=[15, 5, 20], lookAt=[0, 2, 0]) to keep both characters visible from a third-person side perspective"
+        },
+        {
+          "path": "frontend/src/components/Character3D.tsx",
+          "operation": "create",
+          "description": "Create a reusable 3D character mesh component that accepts position (x, y, z), color/material props, scale, and rotation. Use a capsule or box geometry to represent the character body. Apply distinct materials (e.g., MeshStandardMaterial with different colors) for UG vs Sukuna. The component should render at the provided 3D position and update when position props change. Include a simple animation or pose offset when attacking (optional visual flourish)"
+        },
+        {
+          "path": "frontend/src/components/HealthBarOverlay.tsx",
+          "operation": "create",
+          "description": "Extract the health bar rendering logic from FightingGame into a separate overlay component that displays player and enemy health bars as HTML elements positioned absolutely at the top of the screen. Accept player and enemy health values as props and render the bars with the same styling as the 2D version (red fill, border, label). This keeps UI rendering separate from the 3D scene"
+        },
+        {
+          "path": "frontend/src/components/GameStatusOverlay.tsx",
+          "operation": "create",
+          "description": "Extract the victory/game-over screen rendering into a separate overlay component that displays the game status message, final scores, and restart button when gameState.status is 'victory' or 'game-over'. Accept gameState and onRestart callback as props. Style consistently with the existing dark fighting-game theme"
+        }
+      ]
+    },
+    {
+      "id": "REQ-13",
+      "summary": "Port all game logic (movement, jumping, gravity, attacks, AI, health, combat, status) to 3D positions while retaining keyboard and on-screen touch controls",
+      "acceptanceCriteria": [
+        "UG moves left/right along the X-axis and jumps along the Y-axis; gravity brings UG back to the ground plane.",
+        "Punch and kick attacks have 3D hitboxes that correctly detect overlap with Sukuna's bounding volume.",
+        "Sukuna AI approaches UG along the X-axis and attacks at close range.",
+        "Health bars are still displayed as HTML overlay UI at the top of the screen, updating correctly.",
+        "Game-over and victory screens appear when the respective health reaches zero.",
+        "Keyboard controls (WASD / arrow keys, Z/X for punch/kick) and on-screen touch buttons all function identically to the 2D version."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/types/game.ts",
+          "operation": "modify",
+          "description": "Extend the Character and Enemy interfaces to include a z position coordinate (z: number) in addition to x and y. Update Particle interface similarly if particles need 3D positions. Ensure all game state types support 3D coordinates while maintaining backward compatibility with existing logic"
+        },
+        {
+          "path": "frontend/src/utils/gamePhysics.ts",
+          "operation": "modify",
+          "description": "Update physics functions to operate in 3D space. Modify movement logic to update character.x (left/right along X-axis) and character.y (vertical for jumping/gravity). Add or initialize character.z if needed for depth positioning (typically fixed at z=0 for side-view). Update the ground level constant to match the 3D arena floor y-position. Ensure gravity, friction, and jump mechanics work identically but write to 3D coordinates. Update checkRectangleOverlap to work with 3D bounding boxes (AABB collision) by checking x/y overlap and ensuring z-depth overlap if characters have depth"
+        },
+        {
+          "path": "frontend/src/utils/combatSystem.ts",
+          "operation": "modify",
+          "description": "Update hit detection to use 3D bounding volumes. Modify checkHit functions to test overlap in 3D space (x, y, z ranges). Ensure damage calculation, knockback application, and particle spawning logic remain functionally identical but position particles at 3D impact points (character.x, character.y + offset, character.z). Update createPlayer and createEnemy factories to initialize z coordinates"
+        },
+        {
+          "path": "frontend/src/utils/enemyAI.ts",
+          "operation": "modify",
+          "description": "Update enemy AI to move along the X-axis toward the player and attack at close range in 3D space. Modify distance calculations to use 3D coordinates (consider x and y, z is typically fixed). Ensure approach, attack, retreat, and stagger states update enemy.x, enemy.y, and enemy.z positions correctly. Gravity and movement logic should write to 3D coords. Maintain existing AI behavior timing and decision logic"
+        },
+        {
+          "path": "frontend/src/components/FightingGame.tsx",
+          "operation": "modify",
+          "description": "Update the game loop logic to work with 3D positions. Remove all canvas drawing calls. Instead, pass updated character positions to the Scene3D and Character3D components via props or shared state (e.g., React state or refs). Ensure the update loop calls gamePhysics, combatSystem, and enemyAI with 3D coordinates. Render Character3D components for UG and each Sukuna enemy at their current 3D positions. Keep OnScreenControls rendering in the overlay without changes. Ensure keyboard controls from useKeyboardControls and touch controls from OnScreenControls drive the same KeyState ref that updates 3D positions"
+        },
+        {
+          "path": "frontend/src/components/Scene3D.tsx",
+          "operation": "modify",
+          "description": "Accept player and enemy positions as props and render Character3D instances at those 3D coordinates. Ensure the scene updates reactively when positions change each frame. Integrate lighting and camera setup as defined in REQ-12. Keep the arena floor and stage boundaries rendered consistently"
+        }
+      ]
+    },
+    {
+      "id": "REQ-14",
+      "summary": "Add 3D particle effects for attacks and hits using Three.js instanced meshes or sprites with fiery/cursed-energy visuals",
+      "acceptanceCriteria": [
+        "A burst of 3D particles (instanced meshes or sprite points) appears at the hit location when UG or Sukuna lands an attack.",
+        "Particles use fiery orange/red or cursed-energy purple colors matching the existing theme.",
+        "Particles fade out or dissipate within ~0.5 seconds after spawning."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/ParticleSystem3D.tsx",
+          "operation": "create",
+          "description": "Create a 3D particle system component using Three.js InstancedMesh or Points with sprite materials. Accept an array of active particles (each with position, velocity, life, color) as props. Render particles as small spheres or sprite points at their 3D positions. Apply fiery orange/red or cursed-energy purple colors using MeshBasicMaterial or PointsMaterial. Animate particles by updating their positions and opacity based on life remaining. Remove particles when life reaches zero"
+        },
+        {
+          "path": "frontend/src/utils/combatSystem.ts",
+          "operation": "modify",
+          "description": "Update the spawnHitParticles or equivalent function to create particles with 3D positions (x, y, z) at the point of impact. Use the existing particle spawn logic but ensure particles are added to a 3D particle array with velocity vectors in 3D space. Set initial colors to fiery orange/red or cursed-energy purple based on attack type or character. Ensure particles have a lifetime of ~0.5 seconds and fade out over that duration"
+        },
+        {
+          "path": "frontend/src/components/FightingGame.tsx",
+          "operation": "modify",
+          "description": "Integrate ParticleSystem3D into the Scene3D or Canvas rendering. Pass the active particles array from gameState to ParticleSystem3D. Ensure particles are updated each frame (position, life decrement) in the game loop. Remove expired particles from the array. Render ParticleSystem3D within the 3D scene so particles appear at the correct depth relative to characters"
+        },
+        {
+          "path": "frontend/src/types/game.ts",
+          "operation": "modify",
+          "description": "Ensure the Particle interface includes a z coordinate and any additional fields needed for 3D rendering (e.g., velocity as a 3D vector with vx, vy, vz). Confirm that particles can store color information for fiery/cursed-energy theming"
+        }
+      ]
+    }
+  ]
+}
