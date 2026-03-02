@@ -1,10 +1,11 @@
-import { Character, Enemy, GameState, GameStatus, AttackType, FacingDirection, Particle } from '../types/game';
+import { Character, Enemy, GameState, GameStatus, AttackType, FacingDirection, Particle, Projectile } from '../types/game';
 import { getAttackHitbox, rectsOverlap } from './gamePhysics';
 
 const PUNCH_DAMAGE = 8;
 const KICK_DAMAGE = 12;
 const ENEMY_PUNCH_DAMAGE = 6;
 const ENEMY_KICK_DAMAGE = 10;
+export const PROJECTILE_DAMAGE = 15;
 
 function getDamage(type: AttackType, isEnemy: boolean): number {
   if (type === AttackType.PUNCH) return isEnemy ? ENEMY_PUNCH_DAMAGE : PUNCH_DAMAGE;
@@ -32,6 +33,47 @@ function spawnHitParticles(x: number, y: number, z: number, color: string): Part
     });
   }
   return particles;
+}
+
+export function spawnProjectileHitParticles(x: number, y: number, z: number): Particle[] {
+  const particles: Particle[] = [];
+  for (let i = 0; i < 14; i++) {
+    const angle = (Math.PI * 2 * i) / 14 + Math.random() * 0.4;
+    const speed = 100 + Math.random() * 180;
+    const vz = (Math.random() - 0.5) * 80;
+    particles.push({
+      x,
+      y,
+      z,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed - 100,
+      vz,
+      life: 0.35 + Math.random() * 0.25,
+      maxLife: 0.6,
+      color: '#ffee00',
+      size: 5 + Math.random() * 8,
+    });
+  }
+  return particles;
+}
+
+export function checkProjectileHitsEnemy(
+  projectile: Projectile,
+  enemy: Character
+): boolean {
+  // Projectile hitbox: small sphere radius ~0.5 world units
+  // Convert projectile x/y from game coords to check against enemy rect
+  const pRadius = 20; // in game units (same scale as character coords)
+  return rectsOverlap(
+    projectile.x - pRadius,
+    projectile.y - pRadius,
+    pRadius * 2,
+    pRadius * 2,
+    enemy.x,
+    enemy.y,
+    enemy.width,
+    enemy.height
+  );
 }
 
 export function processCombat(state: GameState): GameState {

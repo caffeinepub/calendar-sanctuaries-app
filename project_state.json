@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 9,
-  "summary": "A 3D fighting game where the player controls a character named UG who battles against enemies named Sukuna. The game features on-screen touch/click controls (punch icon, kick icon, movement buttons, etc.) for players without a keyboard.",
+  "projectStateVersion": 15,
+  "summary": "A 3D fighting game where the player controls a character named UG who battles against enemies named Sukuna. The game features on-screen touch/click controls (punch icon, kick icon, movement buttons, etc.) for players without a keyboard. Players can also use guns as weapons.",
   "architectural_notes": [],
   "known_issues": [],
   "isFixRequest": false,
@@ -109,6 +109,118 @@
         "REQ-14"
       ],
       "version": 1
+    },
+    {
+      "id": "feature-add-a-gun-weapon-system-for-ug-in-the-3d-fighting-game-ug-should-be-able-to-fire-projectiles-using-a-dedicated-key-e-g-f-or-q-on-keyboard-each-fired-projectile-travels-horizontally-across-the-arena-in-the-direction-ug-is-facing-deals-damage-to-sukuna-on-contact-and-disappears-on-hit-or-when-it-leaves-the-arena-bounds",
+      "title": "Add a gun weapon system for UG in the 3D fighting game. UG should be able to fire projectiles using a dedicated key (e.g., 'F' or 'Q' on keyboard). Each fired projectile travels horizontally across the arena in the direction UG is facing, deals damage to Sukuna on contact, and disappears on hit or when it leaves the arena bounds.",
+      "reqIds": [
+        "REQ-15"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-shoot-on-screen-control-button-to-the-onscreencontrols-overlay-so-the-gun-can-be-fired-without-a-keyboard-the-button-should-be-clearly-labelled-e-g-shoot-or-a-gun-icon-and-follow-the-same-mousedown-mouseup-and-touchstart-touchend-pattern-used-by-existing-punch-and-kick-buttons",
+      "title": "Add a SHOOT on-screen control button to the OnScreenControls overlay so the gun can be fired without a keyboard. The button should be clearly labelled (e.g., 'SHOOT' or a gun icon) and follow the same mousedown/mouseup and touchstart/touchend pattern used by existing punch and kick buttons.",
+      "reqIds": [
+        "REQ-16"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-extend-the-keystate-and-character-type-definitions-in-frontend-src-types-game-ts-to-include-a-shoot-boolean-key-and-any-necessary-projectile-state-position-velocity-active-flag-so-the-gun-system-integrates-with-existing-typescript-types",
+      "title": "Extend the KeyState and Character type definitions in frontend/src/types/game.ts to include a 'shoot' boolean key and any necessary projectile state (position, velocity, active flag) so the gun system integrates with existing TypeScript types.",
+      "reqIds": [
+        "REQ-17"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-enhance-the-3d-character-meshes-for-ug-and-sukuna-in-character3d-tsx-with-more-detailed-geometry-replace-the-simple-box-sphere-shapes-with-multi-part-articulated-bodies-head-torso-arms-legs-using-combined-buffergeometry-or-grouped-meshes-apply-distinct-stylized-materials-meshstandardmaterial-or-meshphysicalmaterial-with-emissive-highlights-so-ug-and-sukuna-are-visually-distinct-and-recognizable-at-a-glance",
+      "title": "Enhance the 3D character meshes for UG and Sukuna in Character3D.tsx with more detailed geometry — replace the simple box/sphere shapes with multi-part articulated bodies (head, torso, arms, legs using combined BufferGeometry or grouped meshes), apply distinct stylized materials (MeshStandardMaterial or MeshPhysicalMaterial with emissive highlights) so UG and Sukuna are visually distinct and recognizable at a glance.",
+      "reqIds": [
+        "REQ-18"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-upgrade-the-battle-arena-in-scene3d-tsx-with-richer-environmental-graphics-a-textured-or-shaded-ground-plane-with-glowing-edge-trim-background-scenery-elements-e-g-distant-pillars-ruined-walls-or-cursed-energy-architectural-accents-as-3d-meshes-and-atmospheric-fog-or-depth-haze-to-add-depth-to-the-scene",
+      "title": "Upgrade the battle arena in Scene3D.tsx with richer environmental graphics: a textured or shaded ground plane with glowing edge trim, background scenery elements (e.g., distant pillars, ruined walls, or cursed-energy architectural accents as 3D meshes), and atmospheric fog or depth haze to add depth to the scene.",
+      "reqIds": [
+        "REQ-19"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-improve-the-lighting-setup-in-scene3d-tsx-for-a-more-dramatic-look-add-colored-point-lights-deep-red-orange-for-sukuna-s-side-cool-white-blue-for-ug-s-side-that-pulse-or-flicker-subtly-and-a-rim-light-behind-each-character-to-make-them-pop-against-the-background",
+      "title": "Improve the lighting setup in Scene3D.tsx for a more dramatic look: add colored point lights (deep red/orange for Sukuna's side, cool white/blue for UG's side) that pulse or flicker subtly, and a rim light behind each character to make them pop against the background.",
+      "reqIds": [
+        "REQ-20"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-enhance-the-projectile-visuals-in-scene3d-tsx-render-gun-projectiles-as-glowing-energy-orbs-a-sphere-mesh-with-emissive-meshstandardmaterial-and-a-pointlight-child-for-local-glow-rather-than-plain-shapes-and-add-a-short-motion-trail-effect-a-stretched-tapered-cylinder-behind-the-projectile-indicating-velocity-direction",
+      "title": "Enhance the projectile visuals in Scene3D.tsx: render gun projectiles as glowing energy orbs (a sphere mesh with emissive MeshStandardMaterial and a PointLight child for local glow) rather than plain shapes, and add a short motion-trail effect (a stretched/tapered cylinder behind the projectile indicating velocity direction).",
+      "reqIds": [
+        "REQ-21"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-upgrade-the-particle-hit-effects-in-particlesystem3d-tsx-increase-visual-variety-by-using-at-least-two-particle-shapes-e-g-sparks-as-stretched-lines-boxes-and-impact-flares-as-flat-quads-sprites-give-them-more-saturated-cursed-energy-colors-bright-magenta-electric-gold-deep-crimson-and-make-them-scale-and-fade-more-dramatically-over-their-lifetime",
+      "title": "Upgrade the particle hit effects in ParticleSystem3D.tsx: increase visual variety by using at least two particle shapes (e.g., sparks as stretched lines/boxes and impact flares as flat quads/sprites), give them more saturated cursed-energy colors (bright magenta, electric gold, deep crimson), and make them scale and fade more dramatically over their lifetime.",
+      "reqIds": [
+        "REQ-22"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-muzzle-flash-effect-in-scene3d-tsx-that-fires-when-ug-shoots-render-a-brief-burst-of-bright-emissive-geometry-e-g-a-small-flattened-sphere-or-cross-of-planes-at-the-gun-muzzle-position-visible-for-2-4-frames-then-disappearing",
+      "title": "Add a muzzle flash effect in Scene3D.tsx that fires when UG shoots — render a brief burst of bright emissive geometry (e.g., a small flattened sphere or cross of planes) at the gun muzzle position, visible for 2–4 frames then disappearing.",
+      "reqIds": [
+        "REQ-23"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-an-explosion-effect-in-scene3d-tsx-or-particlesystem3d-tsx-that-triggers-when-a-projectile-hits-sukuna-render-an-expanding-burst-of-emissive-sphere-plane-meshes-or-instanced-particles-with-fiery-colors-orange-red-gold-that-scale-up-and-fade-out-over-0-4-seconds",
+      "title": "Add an explosion effect in Scene3D.tsx or ParticleSystem3D.tsx that triggers when a projectile hits Sukuna — render an expanding burst of emissive sphere/plane meshes or instanced particles with fiery colors (orange, red, gold) that scale up and fade out over ~0.4 seconds.",
+      "reqIds": [
+        "REQ-24"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-persistent-cursed-energy-aura-effect-around-sukuna-in-scene3d-tsx-render-a-slowly-pulsing-semi-transparent-emissive-mesh-e-g-an-enlarged-sphere-or-distorted-shell-in-deep-crimson-dark-magenta-around-sukuna-s-body-that-scales-slightly-in-and-out-over-time-to-convey-supernatural-energy",
+      "title": "Add a persistent cursed-energy aura effect around Sukuna in Scene3D.tsx — render a slowly pulsing semi-transparent emissive mesh (e.g., an enlarged sphere or distorted shell) in deep crimson/dark magenta around Sukuna's body that scales slightly in and out over time to convey supernatural energy.",
+      "reqIds": [
+        "REQ-25"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-ground-impact-shockwave-effect-in-scene3d-tsx-triggered-when-either-character-lands-from-a-jump-render-a-flat-disc-mesh-that-rapidly-expands-outward-along-the-ground-plane-and-fades-in-opacity-over-0-3-seconds-using-the-character-s-team-color-blue-for-ug-red-for-sukuna",
+      "title": "Add a ground impact shockwave effect in Scene3D.tsx triggered when either character lands from a jump — render a flat disc mesh that rapidly expands outward along the ground plane and fades in opacity over ~0.3 seconds, using the character's team color (blue for UG, red for Sukuna).",
+      "reqIds": [
+        "REQ-26"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-animated-energy-projectile-trails-in-scene3d-tsx-as-each-gun-projectile-travels-emit-a-stream-of-small-emissive-particles-or-use-a-tapered-instanced-mesh-ribbon-behind-it-in-electric-gold-cyan-color-that-fade-quickly-reinforcing-the-sense-of-speed-and-energy",
+      "title": "Add animated energy projectile trails in Scene3D.tsx — as each gun projectile travels, emit a stream of small emissive particles (or use a tapered instanced mesh ribbon) behind it in electric gold/cyan color that fade quickly, reinforcing the sense of speed and energy.",
+      "reqIds": [
+        "REQ-27"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-dynamic-screen-edge-vignette-or-flash-overlay-in-the-react-dom-layer-app-tsx-or-fightinggame-tsx-that-briefly-flashes-red-at-the-edges-of-the-viewport-when-ug-takes-damage-giving-tactile-feedback-for-being-hit",
+      "title": "Add a dynamic screen-edge vignette or flash overlay in the React DOM layer (App.tsx or FightingGame.tsx) that briefly flashes red at the edges of the viewport when UG takes damage, giving tactile feedback for being hit.",
+      "reqIds": [
+        "REQ-28"
+      ],
+      "version": 1
     }
   ],
   "new_feature_requests": [
@@ -127,6 +239,24 @@
     {
       "id": "AR-6",
       "summary": "Convert the fighting game from 2D to 3D form",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-7",
+      "summary": "Add guns as weapons/attacks for the player and/or enemies in the 3D fighting game",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-8",
+      "summary": "Add improved graphics/visuals to the 3D fighting game",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-9",
+      "summary": "Add more graphics/visual enhancements to the 3D fighting game (e.g., muzzle flashes, explosions, additional visual effects)",
       "reqIds": [],
       "status": "pending"
     }

@@ -42,6 +42,19 @@ export interface Enemy extends Character {
   attackCooldown: number;
 }
 
+export interface Projectile {
+  id: string;
+  x: number;
+  y: number;
+  z: number;
+  vx: number;
+  vy: number;
+  vz: number;
+  active: boolean;
+  ownerId: string;
+  createdAt: number;
+}
+
 export interface GameState {
   player: Character;
   enemy: Enemy;
@@ -49,6 +62,21 @@ export interface GameState {
   round: number;
   sukunaDefeated: number;
   particles: Particle[];
+  projectiles: Projectile[];
+  // Visual effect events
+  muzzleFlashTime: number;       // timestamp of last shot (performance.now())
+  playerDamageFlashTime: number; // timestamp of last time player took damage
+  playerLandedTime: number;      // timestamp of last player landing
+  enemyLandedTime: number;       // timestamp of last enemy landing
+  explosionEvents: ExplosionEvent[]; // list of active explosion positions
+}
+
+export interface ExplosionEvent {
+  id: string;
+  x: number;
+  y: number;
+  z: number;
+  startTime: number;
 }
 
 export interface Particle {
@@ -70,4 +98,5 @@ export interface KeyState {
   up: boolean;
   punch: boolean;
   kick: boolean;
+  shoot: boolean;
 }

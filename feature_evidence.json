@@ -2,10 +2,63 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-replace-the-existing-2d-canvas-based-fightinggame-component-with-a-fully-3d-scene-built-using-three-js-and-react-three-fiber-the-scene-must-include-a-3d-battle-arena-ground-plane-with-visible-stage-boundaries-3d-character-meshes-for-ug-and-each-sukuna-enemy-dynamic-lighting-ambient-directional-point-lights-for-dramatic-effect-and-a-camera-that-follows-the-action-from-a-fixed-third-person-side-perspective",
-      "featureTitle": "Replace the existing 2D canvas-based FightingGame component with a fully 3D scene built using Three.js and React Three Fiber. The scene must include a 3D battle arena (ground plane with visible stage boundaries), 3D character meshes for UG and each Sukuna enemy, dynamic lighting (ambient + directional/point lights for dramatic effect), and a camera that follows the action from a fixed third-person side perspective.",
+      "featureId": "feature-add-a-muzzle-flash-effect-in-scene3d-tsx-that-fires-when-ug-shoots-render-a-brief-burst-of-bright-emissive-geometry-e-g-a-small-flattened-sphere-or-cross-of-planes-at-the-gun-muzzle-position-visible-for-2-4-frames-then-disappearing",
+      "featureTitle": "Add a muzzle flash effect in Scene3D.tsx that fires when UG shoots — render a brief burst of bright emissive geometry (e.g., a small flattened sphere or cross of planes) at the gun muzzle position, visible for 2–4 frames then disappearing.",
       "files": [
-        "frontend/src/components/Character3D.tsx",
+        "frontend/src/components/Scene3D.tsx"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-23"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-add-an-explosion-effect-in-scene3d-tsx-or-particlesystem3d-tsx-that-triggers-when-a-projectile-hits-sukuna-render-an-expanding-burst-of-emissive-sphere-plane-meshes-or-instanced-particles-with-fiery-colors-orange-red-gold-that-scale-up-and-fade-out-over-0-4-seconds",
+      "featureTitle": "Add an explosion effect in Scene3D.tsx or ParticleSystem3D.tsx that triggers when a projectile hits Sukuna — render an expanding burst of emissive sphere/plane meshes or instanced particles with fiery colors (orange, red, gold) that scale up and fade out over ~0.4 seconds.",
+      "files": [
+        "frontend/src/components/Scene3D.tsx"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-24"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-add-a-persistent-cursed-energy-aura-effect-around-sukuna-in-scene3d-tsx-render-a-slowly-pulsing-semi-transparent-emissive-mesh-e-g-an-enlarged-sphere-or-distorted-shell-in-deep-crimson-dark-magenta-around-sukuna-s-body-that-scales-slightly-in-and-out-over-time-to-convey-supernatural-energy",
+      "featureTitle": "Add a persistent cursed-energy aura effect around Sukuna in Scene3D.tsx — render a slowly pulsing semi-transparent emissive mesh (e.g., an enlarged sphere or distorted shell) in deep crimson/dark magenta around Sukuna's body that scales slightly in and out over time to convey supernatural energy.",
+      "files": [
+        "frontend/src/components/Scene3D.tsx"
+      ],
+      "components": [
+        "core-infrastructure@1.0.2",
+        "shadcn-ui@1.0.0",
+        "build-template-react@1.0.0",
+        "initial-app@1.0.0",
+        "github-export-icp-cli@1.0.0"
+      ],
+      "testIds": [
+        "REQ-25"
+      ],
+      "confidence": "high"
+    },
+    {
+      "featureId": "feature-add-a-ground-impact-shockwave-effect-in-scene3d-tsx-triggered-when-either-character-lands-from-a-jump-render-a-flat-disc-mesh-that-rapidly-expands-outward-along-the-ground-plane-and-fades-in-opacity-over-0-3-seconds-using-the-character-s-team-color-blue-for-ug-red-for-sukuna",
+      "featureTitle": "Add a ground impact shockwave effect in Scene3D.tsx triggered when either character lands from a jump — render a flat disc mesh that rapidly expands outward along the ground plane and fades in opacity over ~0.3 seconds, using the character's team color (blue for UG, red for Sukuna).",
+      "files": [
         "frontend/src/components/FightingGame.tsx",
         "frontend/src/components/Scene3D.tsx"
       ],
@@ -17,20 +70,15 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-12"
+        "REQ-26"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-port-all-existing-game-logic-player-movement-jumping-gravity-attack-hitboxes-enemy-ai-health-bar-state-combat-system-and-game-status-transitions-victory-game-over-to-work-with-3d-positions-x-y-z-in-the-react-three-fiber-scene-retain-keyboard-controls-and-the-existing-on-screen-touch-click-control-overlay-onscreencontrols-without-functional-changes",
-      "featureTitle": "Port all existing game logic — player movement, jumping, gravity, attack hitboxes, enemy AI, health bar state, combat system, and game status transitions (victory/game-over) — to work with 3D positions (X, Y, Z) in the React Three Fiber scene. Retain keyboard controls and the existing on-screen touch/click control overlay (OnScreenControls) without functional changes.",
+      "featureId": "feature-add-animated-energy-projectile-trails-in-scene3d-tsx-as-each-gun-projectile-travels-emit-a-stream-of-small-emissive-particles-or-use-a-tapered-instanced-mesh-ribbon-behind-it-in-electric-gold-cyan-color-that-fade-quickly-reinforcing-the-sense-of-speed-and-energy",
+      "featureTitle": "Add animated energy projectile trails in Scene3D.tsx — as each gun projectile travels, emit a stream of small emissive particles (or use a tapered instanced mesh ribbon) behind it in electric gold/cyan color that fade quickly, reinforcing the sense of speed and energy.",
       "files": [
-        "frontend/src/components/FightingGame.tsx",
-        "frontend/src/components/Scene3D.tsx",
-        "frontend/src/types/game.ts",
-        "frontend/src/utils/combatSystem.ts",
-        "frontend/src/utils/enemyAI.ts",
-        "frontend/src/utils/gamePhysics.ts"
+        "frontend/src/components/Scene3D.tsx"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -40,18 +88,15 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-13"
+        "REQ-27"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-add-3d-particle-effects-for-attacks-and-hits-replace-the-existing-2d-canvas-particle-system-with-three-js-particle-sprites-or-instanced-meshes-fiery-cursed-energy-visual-accents-should-appear-at-the-point-of-impact-when-a-hit-lands-on-either-character-consistent-with-the-existing-bold-dramatic-theme",
-      "featureTitle": "Add 3D particle effects for attacks and hits — replace the existing 2D canvas particle system with Three.js particle sprites or instanced meshes. Fiery/cursed-energy visual accents should appear at the point of impact when a hit lands on either character, consistent with the existing bold dramatic theme.",
+      "featureId": "feature-add-a-dynamic-screen-edge-vignette-or-flash-overlay-in-the-react-dom-layer-app-tsx-or-fightinggame-tsx-that-briefly-flashes-red-at-the-edges-of-the-viewport-when-ug-takes-damage-giving-tactile-feedback-for-being-hit",
+      "featureTitle": "Add a dynamic screen-edge vignette or flash overlay in the React DOM layer (App.tsx or FightingGame.tsx) that briefly flashes red at the edges of the viewport when UG takes damage, giving tactile feedback for being hit.",
       "files": [
-        "frontend/src/components/FightingGame.tsx",
-        "frontend/src/components/ParticleSystem3D.tsx",
-        "frontend/src/types/game.ts",
-        "frontend/src/utils/combatSystem.ts"
+        "frontend/src/components/FightingGame.tsx"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -61,7 +106,7 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-14"
+        "REQ-28"
       ],
       "confidence": "high"
     }

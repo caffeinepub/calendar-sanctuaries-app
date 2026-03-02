@@ -1,123 +1,126 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Convert fighting game from 2D canvas to 3D (Three.js / React Three Fiber)",
+  "title": "Add more visual effects and graphical enhancements to the 3D fighting game",
   "requirements": [
     {
-      "id": "REQ-12",
-      "summary": "Replace 2D canvas with 3D React Three Fiber scene including 3D arena, character meshes, lighting, and side-view camera",
+      "id": "REQ-23",
+      "summary": "Add muzzle flash effect when UG shoots",
       "acceptanceCriteria": [
-        "The game renders inside a React Three Fiber Canvas replacing the old HTML5 canvas element.",
-        "UG and Sukuna are represented by distinct 3D meshes (e.g. box or capsule geometries with distinct colors/materials).",
-        "A 3D arena floor/stage is visible beneath the characters.",
-        "At least one dynamic light source illuminates the scene with noticeable shadow or shading.",
-        "Camera is positioned for a side-view perspective and keeps both characters visible."
+        "A visible flash appears at UG's gun muzzle position each time a projectile is fired.",
+        "The flash is visually bright/emissive and disappears within a few frames.",
+        "No persistent visual artifact is left after the flash fades."
       ],
       "file_operations": [
         {
-          "path": "frontend/package.json",
-          "operation": "modify",
-          "description": "Add @react-three/fiber, @react-three/drei, and three as dependencies to enable 3D rendering with React Three Fiber"
-        },
-        {
-          "path": "frontend/src/components/FightingGame.tsx",
-          "operation": "modify",
-          "description": "Replace the HTML5 canvas element with a React Three Fiber Canvas component. Remove all 2D canvas rendering code (drawBackground, drawCharacter, drawHealthBar, drawParticles). Wrap the 3D scene content in the Canvas and keep the HTML overlay for health bars, game status UI, and OnScreenControls. Position the Canvas to fill the game container while preserving the existing layout structure"
-        },
-        {
           "path": "frontend/src/components/Scene3D.tsx",
-          "operation": "create",
-          "description": "Create a React Three Fiber scene component that renders the 3D battle arena. Include a ground plane mesh (PlaneGeometry) positioned at y=0 with a dark material, visible stage boundaries (box outlines or edge markers), an ambientLight for base illumination, and a directional or point light for dramatic shadows. Position the camera at a fixed side-view angle (e.g., position=[15, 5, 20], lookAt=[0, 2, 0]) to keep both characters visible from a third-person side perspective"
-        },
-        {
-          "path": "frontend/src/components/Character3D.tsx",
-          "operation": "create",
-          "description": "Create a reusable 3D character mesh component that accepts position (x, y, z), color/material props, scale, and rotation. Use a capsule or box geometry to represent the character body. Apply distinct materials (e.g., MeshStandardMaterial with different colors) for UG vs Sukuna. The component should render at the provided 3D position and update when position props change. Include a simple animation or pose offset when attacking (optional visual flourish)"
-        },
-        {
-          "path": "frontend/src/components/HealthBarOverlay.tsx",
-          "operation": "create",
-          "description": "Extract the health bar rendering logic from FightingGame into a separate overlay component that displays player and enemy health bars as HTML elements positioned absolutely at the top of the screen. Accept player and enemy health values as props and render the bars with the same styling as the 2D version (red fill, border, label). This keeps UI rendering separate from the 3D scene"
-        },
-        {
-          "path": "frontend/src/components/GameStatusOverlay.tsx",
-          "operation": "create",
-          "description": "Extract the victory/game-over screen rendering into a separate overlay component that displays the game status message, final scores, and restart button when gameState.status is 'victory' or 'game-over'. Accept gameState and onRestart callback as props. Style consistently with the existing dark fighting-game theme"
+          "operation": "modify",
+          "description": "Add a MuzzleFlash component that renders a bright emissive geometry (small flattened sphere or cross of planes) at the gun muzzle position. Track projectile creation events to trigger the flash, render it for 2-4 frames using a frame counter or time-based opacity fade, then remove it. Position the flash relative to UG's gun mesh position and ensure it uses emissive material with high intensity."
         }
       ]
     },
     {
-      "id": "REQ-13",
-      "summary": "Port all game logic (movement, jumping, gravity, attacks, AI, health, combat, status) to 3D positions while retaining keyboard and on-screen touch controls",
+      "id": "REQ-24",
+      "summary": "Add explosion effect when projectile hits Sukuna",
       "acceptanceCriteria": [
-        "UG moves left/right along the X-axis and jumps along the Y-axis; gravity brings UG back to the ground plane.",
-        "Punch and kick attacks have 3D hitboxes that correctly detect overlap with Sukuna's bounding volume.",
-        "Sukuna AI approaches UG along the X-axis and attacks at close range.",
-        "Health bars are still displayed as HTML overlay UI at the top of the screen, updating correctly.",
-        "Game-over and victory screens appear when the respective health reaches zero.",
-        "Keyboard controls (WASD / arrow keys, Z/X for punch/kick) and on-screen touch buttons all function identically to the 2D version."
+        "An explosion visual effect appears at the point of projectile impact on Sukuna.",
+        "The explosion uses fiery/cursed-energy colors consistent with the existing theme.",
+        "The effect scales up and fades out within approximately 0.4 seconds.",
+        "No persistent geometry remains after the explosion animation completes."
       ],
       "file_operations": [
-        {
-          "path": "frontend/src/types/game.ts",
-          "operation": "modify",
-          "description": "Extend the Character and Enemy interfaces to include a z position coordinate (z: number) in addition to x and y. Update Particle interface similarly if particles need 3D positions. Ensure all game state types support 3D coordinates while maintaining backward compatibility with existing logic"
-        },
-        {
-          "path": "frontend/src/utils/gamePhysics.ts",
-          "operation": "modify",
-          "description": "Update physics functions to operate in 3D space. Modify movement logic to update character.x (left/right along X-axis) and character.y (vertical for jumping/gravity). Add or initialize character.z if needed for depth positioning (typically fixed at z=0 for side-view). Update the ground level constant to match the 3D arena floor y-position. Ensure gravity, friction, and jump mechanics work identically but write to 3D coordinates. Update checkRectangleOverlap to work with 3D bounding boxes (AABB collision) by checking x/y overlap and ensuring z-depth overlap if characters have depth"
-        },
-        {
-          "path": "frontend/src/utils/combatSystem.ts",
-          "operation": "modify",
-          "description": "Update hit detection to use 3D bounding volumes. Modify checkHit functions to test overlap in 3D space (x, y, z ranges). Ensure damage calculation, knockback application, and particle spawning logic remain functionally identical but position particles at 3D impact points (character.x, character.y + offset, character.z). Update createPlayer and createEnemy factories to initialize z coordinates"
-        },
-        {
-          "path": "frontend/src/utils/enemyAI.ts",
-          "operation": "modify",
-          "description": "Update enemy AI to move along the X-axis toward the player and attack at close range in 3D space. Modify distance calculations to use 3D coordinates (consider x and y, z is typically fixed). Ensure approach, attack, retreat, and stagger states update enemy.x, enemy.y, and enemy.z positions correctly. Gravity and movement logic should write to 3D coords. Maintain existing AI behavior timing and decision logic"
-        },
-        {
-          "path": "frontend/src/components/FightingGame.tsx",
-          "operation": "modify",
-          "description": "Update the game loop logic to work with 3D positions. Remove all canvas drawing calls. Instead, pass updated character positions to the Scene3D and Character3D components via props or shared state (e.g., React state or refs). Ensure the update loop calls gamePhysics, combatSystem, and enemyAI with 3D coordinates. Render Character3D components for UG and each Sukuna enemy at their current 3D positions. Keep OnScreenControls rendering in the overlay without changes. Ensure keyboard controls from useKeyboardControls and touch controls from OnScreenControls drive the same KeyState ref that updates 3D positions"
-        },
         {
           "path": "frontend/src/components/Scene3D.tsx",
           "operation": "modify",
-          "description": "Accept player and enemy positions as props and render Character3D instances at those 3D coordinates. Ensure the scene updates reactively when positions change each frame. Integrate lighting and camera setup as defined in REQ-12. Keep the arena floor and stage boundaries rendered consistently"
-        }
-      ]
-    },
-    {
-      "id": "REQ-14",
-      "summary": "Add 3D particle effects for attacks and hits using Three.js instanced meshes or sprites with fiery/cursed-energy visuals",
-      "acceptanceCriteria": [
-        "A burst of 3D particles (instanced meshes or sprite points) appears at the hit location when UG or Sukuna lands an attack.",
-        "Particles use fiery orange/red or cursed-energy purple colors matching the existing theme.",
-        "Particles fade out or dissipate within ~0.5 seconds after spawning."
-      ],
-      "file_operations": [
+          "description": "Add an ExplosionEffect component that renders expanding emissive sphere/plane meshes with fiery colors (orange, red, gold). Listen for projectile hit events on Sukuna and spawn explosion instances at the hit position. Animate each explosion by scaling up and reducing opacity over 0.4 seconds, then remove the mesh. Use instanced meshes if multiple explosions can occur simultaneously."
+        },
         {
           "path": "frontend/src/components/ParticleSystem3D.tsx",
-          "operation": "create",
-          "description": "Create a 3D particle system component using Three.js InstancedMesh or Points with sprite materials. Accept an array of active particles (each with position, velocity, life, color) as props. Render particles as small spheres or sprite points at their 3D positions. Apply fiery orange/red or cursed-energy purple colors using MeshBasicMaterial or PointsMaterial. Animate particles by updating their positions and opacity based on life remaining. Remove particles when life reaches zero"
-        },
-        {
-          "path": "frontend/src/utils/combatSystem.ts",
           "operation": "modify",
-          "description": "Update the spawnHitParticles or equivalent function to create particles with 3D positions (x, y, z) at the point of impact. Use the existing particle spawn logic but ensure particles are added to a 3D particle array with velocity vectors in 3D space. Set initial colors to fiery orange/red or cursed-energy purple based on attack type or character. Ensure particles have a lifetime of ~0.5 seconds and fade out over that duration"
+          "description": "Extend the particle system to support explosion particle bursts. Add a new particle type or effect mode that emits a radial burst of particles with fiery colors at a given position. Configure particles to scale up and fade out over approximately 0.4 seconds to match the explosion effect timing."
+        }
+      ]
+    },
+    {
+      "id": "REQ-25",
+      "summary": "Add persistent cursed-energy aura effect around Sukuna",
+      "acceptanceCriteria": [
+        "Sukuna has a visible pulsing aura effect rendered around their mesh at all times during battle.",
+        "The aura uses deep crimson or dark magenta emissive coloring.",
+        "The aura subtly scales or pulses in a looping animation rather than remaining static.",
+        "The effect does not obscure Sukuna's character mesh."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/Scene3D.tsx",
+          "operation": "modify",
+          "description": "Add a CursedEnergyAura component that renders a semi-transparent emissive mesh (enlarged sphere or distorted shell) around Sukuna's position. Use deep crimson/dark magenta color with emissive material. Animate the aura scale using a sine wave or easing function to pulse between 0.95 and 1.05 scale over 2-3 seconds in a loop. Position the aura to follow Sukuna's mesh and ensure it renders behind the character (adjust renderOrder or use transparency blending)."
+        }
+      ]
+    },
+    {
+      "id": "REQ-26",
+      "summary": "Add ground impact shockwave effect when characters land from jump",
+      "acceptanceCriteria": [
+        "A shockwave disc appears on the ground at the character's landing position when they land from a jump.",
+        "The disc expands radially and fades out over approximately 0.3 seconds.",
+        "UG's shockwave uses blue/cool coloring; Sukuna's uses red/warm coloring.",
+        "No shockwave is shown when the character is simply walking (only on jump landing)."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/Scene3D.tsx",
+          "operation": "modify",
+          "description": "Add a ShockwaveEffect component that renders a flat disc mesh on the ground plane. Detect landing events by checking when a character's velocityY transitions from negative to zero/positive while grounded. Spawn a shockwave instance at the landing position with team-colored material (blue for UG, red for Sukuna). Animate the disc by scaling its radius from near-zero to 2-3 units and fading opacity from 1 to 0 over 0.3 seconds, then remove the mesh."
         },
         {
           "path": "frontend/src/components/FightingGame.tsx",
           "operation": "modify",
-          "description": "Integrate ParticleSystem3D into the Scene3D or Canvas rendering. Pass the active particles array from gameState to ParticleSystem3D. Ensure particles are updated each frame (position, life decrement) in the game loop. Remove expired particles from the array. Render ParticleSystem3D within the 3D scene so particles appear at the correct depth relative to characters"
+          "description": "Add landing detection logic to track when player and enemy transition from airborne to grounded state. Pass landing events to Scene3D via a callback or state update so shockwave effects can be triggered at the correct position and time. Ensure landing is only detected after a jump, not during normal walking."
+        }
+      ]
+    },
+    {
+      "id": "REQ-27",
+      "summary": "Add animated energy projectile trails",
+      "acceptanceCriteria": [
+        "Traveling projectiles have a visible trailing particle or ribbon effect behind them.",
+        "Trail uses electric gold or cyan emissive coloring.",
+        "Trail particles fade quickly so they don't linger beyond 0.2 seconds after the projectile has passed.",
+        "The trail does not appear for melee attacks, only for gun projectiles."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/Scene3D.tsx",
+          "operation": "modify",
+          "description": "Add a ProjectileTrail component that renders a stream of small emissive particles or a tapered ribbon mesh behind each gun projectile. As projectiles move, emit trail particles at regular intervals (every frame or every few frames) at the projectile's current position. Use electric gold/cyan emissive material and fade particles over 0.2 seconds. Alternatively, use a ribbon/trail mesh that stretches from the projectile's current position to its previous positions, fading the oldest segments."
         },
         {
-          "path": "frontend/src/types/game.ts",
+          "path": "frontend/src/components/ParticleSystem3D.tsx",
           "operation": "modify",
-          "description": "Ensure the Particle interface includes a z coordinate and any additional fields needed for 3D rendering (e.g., velocity as a 3D vector with vx, vy, vz). Confirm that particles can store color information for fiery/cursed-energy theming"
+          "description": "Extend the particle system to support trail particles. Add a method to spawn trail particles at a given position with a short lifetime (0.2 seconds). Configure trail particles to use electric gold or cyan colors and fade out quickly. Ensure trail particles are visually distinct from impact particles."
+        }
+      ]
+    },
+    {
+      "id": "REQ-28",
+      "summary": "Add dynamic screen-edge vignette flash overlay when UG takes damage",
+      "acceptanceCriteria": [
+        "A red semi-transparent vignette/border flash is visible around the screen edges when UG takes a hit.",
+        "The flash fades out within approximately 0.5 seconds.",
+        "The effect does not block game controls or obscure health bars.",
+        "The effect triggers only when UG loses health, not when Sukuna takes damage."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/FightingGame.tsx",
+          "operation": "modify",
+          "description": "Add state to track when UG takes damage and trigger a damage flash effect. Detect when player health decreases and set a flash trigger timestamp. Render a DOM overlay (absolutely positioned div covering the viewport) with a radial gradient vignette effect in red. Animate the overlay's opacity from 0.6 to 0 over 0.5 seconds using CSS transitions or requestAnimationFrame. Ensure the overlay has pointer-events: none so it doesn't block controls."
+        },
+        {
+          "path": "frontend/src/App.tsx",
+          "operation": "modify",
+          "description": "If the damage flash overlay is implemented as a separate component, wire it into App.tsx to receive damage events from FightingGame. Alternatively, ensure the overlay is rendered within FightingGame itself and does not interfere with the header or footer layout."
         }
       ]
     }

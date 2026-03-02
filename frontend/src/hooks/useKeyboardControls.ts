@@ -8,6 +8,7 @@ export function useKeyboardControls(): React.MutableRefObject<KeyState> {
     up: false,
     punch: false,
     kick: false,
+    shoot: false,
   });
 
   useEffect(() => {
@@ -39,6 +40,10 @@ export function useKeyboardControls(): React.MutableRefObject<KeyState> {
           keysRef.current.kick = true;
           e.preventDefault();
           break;
+        case 'KeyF':
+          keysRef.current.shoot = true;
+          e.preventDefault();
+          break;
       }
     };
 
@@ -64,6 +69,9 @@ export function useKeyboardControls(): React.MutableRefObject<KeyState> {
         case 'KeyK':
         case 'KeyX':
           keysRef.current.kick = false;
+          break;
+        case 'KeyF':
+          keysRef.current.shoot = false;
           break;
       }
     };

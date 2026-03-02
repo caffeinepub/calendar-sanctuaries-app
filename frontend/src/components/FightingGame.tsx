@@ -1,13 +1,30 @@
 import React, { useRef, useState, useCallback } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { GameState, GameStatus } from '../types/game';
+import { GameState, GameStatus, Projectile, ExplosionEvent } from '../types/game';
 import { useKeyboardControls } from '../hooks/useKeyboardControls';
 import { useGameLoop } from '../hooks/useGameLoop';
 import { applyPlayerPhysics, applyAttack } from '../utils/gamePhysics';
 import { updateEnemyAI } from '../utils/enemyAI';
-import { processCombat, createNewEnemy, createInitialPlayer, updateParticles } from '../utils/combatSystem';
+import {
+  processCombat,
+  createNewEnemy,
+  createInitialPlayer,
+  updateParticles,
+  checkProjectileHitsEnemy,
+  spawnProjectileHitParticles,
+  PROJECTILE_DAMAGE,
+} from '../utils/combatSystem';
 import OnScreenControls from './OnScreenControls';
 import Scene3D from './Scene3D';
+
+// Projectile settings
+const PROJECTILE_SPEED = 600; // game units per second
+const SHOOT_COOLDOWN = 0.5;   // seconds between shots
+const PROJECTILE_BOUNDS_MIN = -50;
+const PROJECTILE_BOUNDS_MAX = 950;
+
+let projectileIdCounter = 0;
+let explosionIdCounter = 0;
 
 function createInitialState(): GameState {
   return {
@@ -17,6 +34,12 @@ function createInitialState(): GameState {
     round: 1,
     sukunaDefeated: 0,
     particles: [],
+    projectiles: [],
+    muzzleFlashTime: 0,
+    playerDamageFlashTime: 0,
+    playerLandedTime: 0,
+    enemyLandedTime: 0,
+    explosionEvents: [],
   };
 }
 
@@ -24,12 +47,22 @@ const FightingGame: React.FC = () => {
   const stateRef = useRef<GameState>(createInitialState());
   const [uiState, setUiState] = useState<GameState>(createInitialState());
   const keysRef = useKeyboardControls();
+  const lastShotTimeRef = useRef<number>(0);
+
+  // Track previous ground state for landing detection
+  const prevPlayerGroundRef = useRef<boolean>(true);
+  const prevEnemyGroundRef = useRef<boolean>(true);
+  const prevPlayerHealthRef = useRef<number>(150);
 
   const isRunning = uiState.gameStatus === GameStatus.PLAYING;
 
   const update = useCallback((dt: number) => {
     let state = stateRef.current;
     if (state.gameStatus !== GameStatus.PLAYING) return;
+
+    const prevPlayerGround = prevPlayerGroundRef.current;
+    const prevEnemyGround = prevEnemyGroundRef.current;
+    const prevPlayerHealth = prevPlayerHealthRef.current;
 
     // Player update
     let player = applyPlayerPhysics(state.player, keysRef.current, dt);
@@ -39,12 +72,114 @@ const FightingGame: React.FC = () => {
     const enemy = updateEnemyAI(state.enemy, player, dt);
 
     // Particles
-    const particles = updateParticles(state.particles, dt);
+    let particles = updateParticles(state.particles, dt);
 
-    state = { ...state, player, enemy, particles };
+    // --- Projectile: fire ---
+    let projectiles = state.projectiles;
+    const now = performance.now() / 1000;
+    let muzzleFlashTime = state.muzzleFlashTime;
 
-    // Combat
+    if (keysRef.current.shoot && now - lastShotTimeRef.current >= SHOOT_COOLDOWN) {
+      lastShotTimeRef.current = now;
+      muzzleFlashTime = performance.now();
+      const vx = player.facing * PROJECTILE_SPEED;
+      // Spawn at center of player, mid-height
+      const newProjectile: Projectile = {
+        id: `proj_${++projectileIdCounter}`,
+        x: player.x + player.width / 2,
+        y: player.y + player.height * 0.35,
+        z: 0,
+        vx,
+        vy: 0,
+        vz: 0,
+        active: true,
+        ownerId: 'player',
+        createdAt: now,
+      };
+      projectiles = [...projectiles, newProjectile];
+    }
+
+    // --- Projectile: move + hit detection ---
+    const updatedProjectiles: Projectile[] = [];
+    let updatedEnemy = enemy;
+    let explosionEvents = state.explosionEvents.filter(
+      (e) => performance.now() - e.startTime < 600
+    );
+
+    for (const proj of projectiles) {
+      if (!proj.active) continue;
+
+      const newX = proj.x + proj.vx * dt;
+      const newY = proj.y + proj.vy * dt;
+
+      // Out of bounds check
+      if (newX < PROJECTILE_BOUNDS_MIN || newX > PROJECTILE_BOUNDS_MAX) continue;
+
+      const movedProj: Projectile = { ...proj, x: newX, y: newY };
+
+      // Hit detection against enemy
+      if (updatedEnemy.hitTimer <= 0 && checkProjectileHitsEnemy(movedProj, updatedEnemy)) {
+        const newHealth = Math.max(0, updatedEnemy.health - PROJECTILE_DAMAGE);
+        updatedEnemy = {
+          ...updatedEnemy,
+          health: newHealth,
+          hitTimer: 0.25,
+          vx: proj.vx > 0 ? 80 : -80,
+          aiState: 'stagger',
+        };
+        // Spawn hit particles at impact point
+        particles = [
+          ...particles,
+          ...spawnProjectileHitParticles(movedProj.x, movedProj.y, movedProj.z),
+        ];
+        // Spawn explosion event
+        explosionEvents = [
+          ...explosionEvents,
+          {
+            id: `exp_${++explosionIdCounter}`,
+            x: movedProj.x,
+            y: movedProj.y,
+            z: movedProj.z,
+            startTime: performance.now(),
+          },
+        ];
+        // Projectile consumed on hit — don't add to updated list
+        continue;
+      }
+
+      updatedProjectiles.push(movedProj);
+    }
+
+    state = { ...state, player, enemy: updatedEnemy, particles, projectiles: updatedProjectiles, muzzleFlashTime, explosionEvents };
+
+    // Combat (melee)
     state = processCombat(state);
+
+    // --- Landing detection ---
+    let playerLandedTime = state.playerLandedTime;
+    let enemyLandedTime = state.enemyLandedTime;
+
+    // Player landed: was airborne, now on ground
+    if (!prevPlayerGround && state.player.isOnGround) {
+      playerLandedTime = performance.now();
+    }
+    // Enemy landed: was airborne, now on ground
+    if (!prevEnemyGround && state.enemy.isOnGround) {
+      enemyLandedTime = performance.now();
+    }
+
+    // --- Damage flash detection ---
+    let playerDamageFlashTime = state.playerDamageFlashTime;
+    if (state.player.health < prevPlayerHealth) {
+      playerDamageFlashTime = performance.now();
+    }
+
+    // Update previous state refs
+    prevPlayerGroundRef.current = state.player.isOnGround;
+    prevEnemyGroundRef.current = state.enemy.isOnGround;
+    prevPlayerHealthRef.current = state.player.health;
+
+    state = { ...state, playerLandedTime, enemyLandedTime, playerDamageFlashTime };
 
     stateRef.current = state;
 
@@ -61,12 +196,22 @@ const FightingGame: React.FC = () => {
     const newState = createInitialState();
     newState.gameStatus = GameStatus.PLAYING;
     stateRef.current = newState;
+    lastShotTimeRef.current = 0;
+    prevPlayerGroundRef.current = true;
+    prevEnemyGroundRef.current = true;
+    prevPlayerHealthRef.current = 150;
     setUiState({ ...newState });
   };
 
   const handleRestart = () => {
     handleStart();
   };
+
+  // Damage flash opacity (0 to 1, fades over 500ms)
+  const damageFlashAge = performance.now() - uiState.playerDamageFlashTime;
+  const damageFlashOpacity = uiState.playerDamageFlashTime > 0
+    ? Math.max(0, 1 - damageFlashAge / 500)
+    : 0;
 
   return (
     <div className="flex flex-col items-center w-full select-none">
@@ -132,9 +277,31 @@ const FightingGame: React.FC = () => {
             player={uiState.player}
             enemy={uiState.enemy}
             particles={uiState.particles}
+            projectiles={uiState.projectiles}
             sukunaDefeated={uiState.sukunaDefeated}
+            muzzleFlashTime={uiState.muzzleFlashTime}
+            playerLandedTime={uiState.playerLandedTime}
+            enemyLandedTime={uiState.enemyLandedTime}
+            explosionEvents={uiState.explosionEvents}
           />
         </Canvas>
+
+        {/* Damage vignette overlay — red screen-edge flash when UG takes damage */}
+        {damageFlashOpacity > 0 && (
+          <div
+            style={{
+              position: 'absolute',
+              inset: 0,
+              borderRadius: '8px',
+              pointerEvents: 'none',
+              opacity: damageFlashOpacity * 0.75,
+              background:
+                'radial-gradient(ellipse at center, transparent 40%, rgba(200,0,0,0.85) 100%)',
+              boxShadow: 'inset 0 0 60px rgba(255,0,0,0.6)',
+              zIndex: 10,
+            }}
+          />
+        )}
 
         {/* On-screen touch/click controls */}
         <OnScreenControls keysRef={keysRef} visible={isRunning} />
@@ -161,7 +328,7 @@ const FightingGame: React.FC = () => {
               </button>
               <div className="text-gray-500 text-xs space-y-1 mt-4">
                 <p>MOVE: ← → / A D &nbsp;|&nbsp; JUMP: ↑ / W / Space</p>
-                <p>PUNCH: J / Z &nbsp;|&nbsp; KICK: K / X</p>
+                <p>PUNCH: J / Z &nbsp;|&nbsp; KICK: K / X &nbsp;|&nbsp; SHOOT: F</p>
                 <p className="text-purple-600">Touch controls available during battle</p>
               </div>
             </div>
@@ -220,6 +387,7 @@ const FightingGame: React.FC = () => {
           <span>↑ Jump</span>
           <span>J Punch</span>
           <span>K Kick</span>
+          <span>F Shoot</span>
         </div>
       )}
     </div>

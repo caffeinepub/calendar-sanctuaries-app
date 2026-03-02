@@ -81,6 +81,24 @@ const KickIcon: React.FC<{ size?: number }> = ({ size = 28 }) => (
   </svg>
 );
 
+// Gun SVG icon
+const GunIcon: React.FC<{ size?: number }> = ({ size = 28 }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    {/* Barrel */}
+    <rect x="2" y="9" width="12" height="4" rx="1" fill="currentColor" />
+    {/* Body */}
+    <rect x="8" y="9" width="8" height="6" rx="1" fill="currentColor" />
+    {/* Grip */}
+    <rect x="11" y="14" width="4" height="5" rx="1.5" fill="currentColor" />
+    {/* Trigger guard */}
+    <rect x="10" y="13" width="2" height="4" rx="1" fill="currentColor" />
+    {/* Muzzle flash hint */}
+    <rect x="14" y="10" width="3" height="2" rx="1" fill="currentColor" opacity="0.7" />
+    {/* Sight */}
+    <rect x="9" y="7" width="2" height="3" rx="0.5" fill="currentColor" />
+  </svg>
+);
+
 const OnScreenControls: React.FC<OnScreenControlsProps> = ({ keysRef, visible }) => {
   if (!visible) return null;
 
@@ -118,7 +136,18 @@ const OnScreenControls: React.FC<OnScreenControlsProps> = ({ keysRef, visible })
       </div>
 
       {/* Attack buttons — bottom right */}
-      <div className="absolute bottom-4 right-3 pointer-events-auto flex gap-3 items-end">
+      <div className="absolute bottom-4 right-3 pointer-events-auto flex gap-2 items-end">
+        {/* Shoot */}
+        <div className="flex flex-col items-center gap-1">
+          <span className="text-[10px] font-black tracking-widest text-yellow-400 uppercase">Shoot</span>
+          <ControlButton
+            ariaLabel="Shoot"
+            onPress={press('shoot')}
+            onRelease={release('shoot')}
+            className="w-16 h-16 border-yellow-500 text-yellow-300 bg-yellow-950/80 hover:bg-yellow-800/90 shadow-[0_0_14px_rgba(255,220,0,0.5)] active:shadow-[0_0_24px_rgba(255,220,0,0.9)]"
+            label={<GunIcon size={30} />}
+          />
+        </div>
         {/* Kick */}
         <div className="flex flex-col items-center gap-1">
           <span className="text-[10px] font-black tracking-widest text-red-400 uppercase">Kick</span>

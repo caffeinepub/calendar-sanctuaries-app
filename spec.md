@@ -1,17 +1,14 @@
 # Specification
 
 ## Summary
-**Goal:** Convert the existing 2D canvas-based fighting game into a fully 3D game using Three.js and React Three Fiber.
+**Goal:** Add visual effects and graphical enhancements to the 3D fighting game to make combat feel more dynamic and impactful.
 
 **Planned changes:**
-- Replace the 2D HTML5 canvas `FightingGame` component with a React Three Fiber `Canvas` scene
-- Add a 3D battle arena with a visible ground plane and stage boundaries
-- Represent UG and Sukuna as distinct 3D character meshes (procedural geometries with distinct colors/materials)
-- Add dynamic lighting (ambient + directional/point lights) with noticeable shading
-- Position camera in a fixed side-view (third-person) perspective keeping both characters in frame
-- Port all game logic (movement, jumping, gravity, attack hitboxes, enemy AI, health, combat, game status) to use 3D positions (X, Y, Z)
-- Retain all keyboard controls (WASD/arrows, Z/X) and the existing OnScreenControls touch overlay without changes
-- Keep health bars and game-over/victory screens as HTML overlay UI
-- Replace the 2D particle system with 3D particle effects (instanced meshes or sprite points) in fiery orange/red or cursed-energy purple, fading out within ~0.5 seconds on hit
+- Add a muzzle flash effect at UG's gun muzzle position that appears for 2–4 frames when a projectile is fired
+- Add an explosion effect at the point of projectile impact on Sukuna using fiery/cursed-energy colors (orange, red, gold) that scales up and fades over ~0.4 seconds
+- Add a persistent pulsing cursed-energy aura around Sukuna using deep crimson/dark magenta emissive coloring that subtly scales in and out in a loop
+- Add a ground shockwave disc effect when either character lands from a jump, expanding radially and fading over ~0.3 seconds (blue for UG, red for Sukuna)
+- Add animated energy trails behind gun projectiles using electric gold/cyan emissive particles that fade within 0.2 seconds
+- Add a red screen-edge vignette flash overlay in the DOM layer that appears when UG takes damage and fades within ~0.5 seconds
 
-**User-visible outcome:** The fighting game runs as a fully 3D side-view brawler with 3D character meshes, a lit arena, and particle hit effects, while all existing controls and UI overlays continue to work as before.
+**User-visible outcome:** Players will see richer visual feedback during combat — muzzle flashes when shooting, explosions on hit, Sukuna's pulsing aura, landing shockwaves, projectile energy trails, and a red screen flash when UG takes damage.
