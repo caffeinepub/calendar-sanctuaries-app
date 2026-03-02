@@ -2,65 +2,16 @@
   "kind": "feature_evidence_report",
   "features": [
     {
-      "featureId": "feature-add-a-muzzle-flash-effect-in-scene3d-tsx-that-fires-when-ug-shoots-render-a-brief-burst-of-bright-emissive-geometry-e-g-a-small-flattened-sphere-or-cross-of-planes-at-the-gun-muzzle-position-visible-for-2-4-frames-then-disappearing",
-      "featureTitle": "Add a muzzle flash effect in Scene3D.tsx that fires when UG shoots — render a brief burst of bright emissive geometry (e.g., a small flattened sphere or cross of planes) at the gun muzzle position, visible for 2–4 frames then disappearing.",
-      "files": [
-        "frontend/src/components/Scene3D.tsx"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-23"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-add-an-explosion-effect-in-scene3d-tsx-or-particlesystem3d-tsx-that-triggers-when-a-projectile-hits-sukuna-render-an-expanding-burst-of-emissive-sphere-plane-meshes-or-instanced-particles-with-fiery-colors-orange-red-gold-that-scale-up-and-fade-out-over-0-4-seconds",
-      "featureTitle": "Add an explosion effect in Scene3D.tsx or ParticleSystem3D.tsx that triggers when a projectile hits Sukuna — render an expanding burst of emissive sphere/plane meshes or instanced particles with fiery colors (orange, red, gold) that scale up and fade out over ~0.4 seconds.",
-      "files": [
-        "frontend/src/components/Scene3D.tsx"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-24"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-add-a-persistent-cursed-energy-aura-effect-around-sukuna-in-scene3d-tsx-render-a-slowly-pulsing-semi-transparent-emissive-mesh-e-g-an-enlarged-sphere-or-distorted-shell-in-deep-crimson-dark-magenta-around-sukuna-s-body-that-scales-slightly-in-and-out-over-time-to-convey-supernatural-energy",
-      "featureTitle": "Add a persistent cursed-energy aura effect around Sukuna in Scene3D.tsx — render a slowly pulsing semi-transparent emissive mesh (e.g., an enlarged sphere or distorted shell) in deep crimson/dark magenta around Sukuna's body that scales slightly in and out over time to convey supernatural energy.",
-      "files": [
-        "frontend/src/components/Scene3D.tsx"
-      ],
-      "components": [
-        "core-infrastructure@1.0.2",
-        "shadcn-ui@1.0.0",
-        "build-template-react@1.0.0",
-        "initial-app@1.0.0",
-        "github-export-icp-cli@1.0.0"
-      ],
-      "testIds": [
-        "REQ-25"
-      ],
-      "confidence": "high"
-    },
-    {
-      "featureId": "feature-add-a-ground-impact-shockwave-effect-in-scene3d-tsx-triggered-when-either-character-lands-from-a-jump-render-a-flat-disc-mesh-that-rapidly-expands-outward-along-the-ground-plane-and-fades-in-opacity-over-0-3-seconds-using-the-character-s-team-color-blue-for-ug-red-for-sukuna",
-      "featureTitle": "Add a ground impact shockwave effect in Scene3D.tsx triggered when either character lands from a jump — render a flat disc mesh that rapidly expands outward along the ground plane and fades in opacity over ~0.3 seconds, using the character's team color (blue for UG, red for Sukuna).",
+      "featureId": "feature-implement-a-multi-level-progression-system-in-the-3d-fighting-game-the-game-should-have-at-least-3-distinct-levels-stages-each-level-should-increase-in-difficulty-e-g-more-sukuna-enemies-faster-stronger-enemies-or-more-enemies-simultaneously-after-defeating-all-enemies-in-a-level-the-player-advances-to-the-next-level-with-a-brief-level-transition-screen-displaying-the-level-number-completing-all-levels-triggers-a-final-victory-screen-the-current-level-number-should-be-displayed-in-the-game-hud-alongside-the-existing-health-bars",
+      "featureTitle": "Implement a multi-level progression system in the 3D fighting game. The game should have at least 3 distinct levels/stages. Each level should increase in difficulty (e.g., more Sukuna enemies, faster/stronger enemies, or more enemies simultaneously). After defeating all enemies in a level, the player advances to the next level with a brief level-transition screen displaying the level number. Completing all levels triggers a final victory screen. The current level number should be displayed in the game HUD alongside the existing health bars.",
       "files": [
         "frontend/src/components/FightingGame.tsx",
-        "frontend/src/components/Scene3D.tsx"
+        "frontend/src/components/GameHUD.tsx",
+        "frontend/src/components/LevelTransitionScreen.tsx",
+        "frontend/src/components/Scene3D.tsx",
+        "frontend/src/components/VictoryScreen.tsx",
+        "frontend/src/types/game.ts",
+        "frontend/src/utils/enemyAI.ts"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -70,15 +21,21 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-26"
+        "REQ-29"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-add-animated-energy-projectile-trails-in-scene3d-tsx-as-each-gun-projectile-travels-emit-a-stream-of-small-emissive-particles-or-use-a-tapered-instanced-mesh-ribbon-behind-it-in-electric-gold-cyan-color-that-fade-quickly-reinforcing-the-sense-of-speed-and-energy",
-      "featureTitle": "Add animated energy projectile trails in Scene3D.tsx — as each gun projectile travels, emit a stream of small emissive particles (or use a tapered instanced mesh ribbon) behind it in electric gold/cyan color that fade quickly, reinforcing the sense of speed and energy.",
+      "featureId": "feature-add-a-sword-weapon-for-ug-in-the-3d-fighting-game-ug-should-be-able-to-equip-and-use-a-sword-via-a-dedicated-key-e-g-e-on-keyboard-when-the-sword-is-active-ug-s-melee-attack-range-and-damage-are-increased-compared-to-the-default-punch-kick-the-sword-should-be-rendered-as-a-3d-mesh-e-g-a-long-thin-box-or-cylinder-with-an-emissive-blade-material-visibly-held-in-ug-s-hand-a-sword-slash-visual-effect-arc-or-sweep-emissive-geometry-should-appear-during-the-attack-animation-the-sword-attack-should-also-be-triggerable-via-a-new-on-screen-sword-button-in-the-onscreencontrols-overlay-following-the-same-mousedown-mouseup-and-touchstart-touchend-pattern-as-existing-buttons",
+      "featureTitle": "Add a sword weapon for UG in the 3D fighting game. UG should be able to equip and use a sword via a dedicated key (e.g., 'E' on keyboard). When the sword is active, UG's melee attack range and damage are increased compared to the default punch/kick. The sword should be rendered as a 3D mesh (e.g., a long, thin box or cylinder with an emissive blade material) visibly held in UG's hand. A sword slash visual effect (arc or sweep emissive geometry) should appear during the attack animation. The sword attack should also be triggerable via a new on-screen SWORD button in the OnScreenControls overlay, following the same mousedown/mouseup and touchstart/touchend pattern as existing buttons.",
       "files": [
-        "frontend/src/components/Scene3D.tsx"
+        "frontend/src/components/Character3D.tsx",
+        "frontend/src/components/FightingGame.tsx",
+        "frontend/src/components/OnScreenControls.tsx",
+        "frontend/src/hooks/useKeyboardControls.ts",
+        "frontend/src/types/game.ts",
+        "frontend/src/utils/combatSystem.ts",
+        "frontend/src/utils/gamePhysics.ts"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -88,15 +45,15 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-27"
+        "REQ-30"
       ],
       "confidence": "high"
     },
     {
-      "featureId": "feature-add-a-dynamic-screen-edge-vignette-or-flash-overlay-in-the-react-dom-layer-app-tsx-or-fightinggame-tsx-that-briefly-flashes-red-at-the-edges-of-the-viewport-when-ug-takes-damage-giving-tactile-feedback-for-being-hit",
-      "featureTitle": "Add a dynamic screen-edge vignette or flash overlay in the React DOM layer (App.tsx or FightingGame.tsx) that briefly flashes red at the edges of the viewport when UG takes damage, giving tactile feedback for being hit.",
+      "featureId": "feature-extend-the-keystate-and-gamestate-type-definitions-in-frontend-src-types-game-ts-to-include-a-sword-boolean-key-for-the-new-sword-attack-input-a-currentlevel-number-field-in-game-state-and-any-necessary-sword-attack-state-e-g-swordactive-flag-sworddamagemultiplier-on-the-character-interface-so-the-levels-and-sword-systems-integrate-cleanly-with-existing-typescript-types",
+      "featureTitle": "Extend the KeyState and GameState type definitions in frontend/src/types/game.ts to include a 'sword' boolean key for the new sword attack input, a 'currentLevel' number field in game state, and any necessary sword-attack state (e.g., swordActive flag, swordDamageMultiplier) on the Character interface, so the levels and sword systems integrate cleanly with existing TypeScript types.",
       "files": [
-        "frontend/src/components/FightingGame.tsx"
+        "frontend/src/types/game.ts"
       ],
       "components": [
         "core-infrastructure@1.0.2",
@@ -106,7 +63,7 @@
         "github-export-icp-cli@1.0.0"
       ],
       "testIds": [
-        "REQ-28"
+        "REQ-31"
       ],
       "confidence": "high"
     }

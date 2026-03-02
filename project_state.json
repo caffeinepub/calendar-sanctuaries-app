@@ -1,7 +1,7 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 15,
-  "summary": "A 3D fighting game where the player controls a character named UG who battles against enemies named Sukuna. The game features on-screen touch/click controls (punch icon, kick icon, movement buttons, etc.) for players without a keyboard. Players can also use guns as weapons.",
+  "projectStateVersion": 17,
+  "summary": "A 3D fighting game where the player controls a character named UG who battles against enemies named Sukuna. The game features on-screen touch/click controls, guns as weapons, multiple levels, and sword weapons.",
   "architectural_notes": [],
   "known_issues": [],
   "isFixRequest": false,
@@ -221,6 +221,30 @@
         "REQ-28"
       ],
       "version": 1
+    },
+    {
+      "id": "feature-implement-a-multi-level-progression-system-in-the-3d-fighting-game-the-game-should-have-at-least-3-distinct-levels-stages-each-level-should-increase-in-difficulty-e-g-more-sukuna-enemies-faster-stronger-enemies-or-more-enemies-simultaneously-after-defeating-all-enemies-in-a-level-the-player-advances-to-the-next-level-with-a-brief-level-transition-screen-displaying-the-level-number-completing-all-levels-triggers-a-final-victory-screen-the-current-level-number-should-be-displayed-in-the-game-hud-alongside-the-existing-health-bars",
+      "title": "Implement a multi-level progression system in the 3D fighting game. The game should have at least 3 distinct levels/stages. Each level should increase in difficulty (e.g., more Sukuna enemies, faster/stronger enemies, or more enemies simultaneously). After defeating all enemies in a level, the player advances to the next level with a brief level-transition screen displaying the level number. Completing all levels triggers a final victory screen. The current level number should be displayed in the game HUD alongside the existing health bars.",
+      "reqIds": [
+        "REQ-29"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-a-sword-weapon-for-ug-in-the-3d-fighting-game-ug-should-be-able-to-equip-and-use-a-sword-via-a-dedicated-key-e-g-e-on-keyboard-when-the-sword-is-active-ug-s-melee-attack-range-and-damage-are-increased-compared-to-the-default-punch-kick-the-sword-should-be-rendered-as-a-3d-mesh-e-g-a-long-thin-box-or-cylinder-with-an-emissive-blade-material-visibly-held-in-ug-s-hand-a-sword-slash-visual-effect-arc-or-sweep-emissive-geometry-should-appear-during-the-attack-animation-the-sword-attack-should-also-be-triggerable-via-a-new-on-screen-sword-button-in-the-onscreencontrols-overlay-following-the-same-mousedown-mouseup-and-touchstart-touchend-pattern-as-existing-buttons",
+      "title": "Add a sword weapon for UG in the 3D fighting game. UG should be able to equip and use a sword via a dedicated key (e.g., 'E' on keyboard). When the sword is active, UG's melee attack range and damage are increased compared to the default punch/kick. The sword should be rendered as a 3D mesh (e.g., a long, thin box or cylinder with an emissive blade material) visibly held in UG's hand. A sword slash visual effect (arc or sweep emissive geometry) should appear during the attack animation. The sword attack should also be triggerable via a new on-screen SWORD button in the OnScreenControls overlay, following the same mousedown/mouseup and touchstart/touchend pattern as existing buttons.",
+      "reqIds": [
+        "REQ-30"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-extend-the-keystate-and-gamestate-type-definitions-in-frontend-src-types-game-ts-to-include-a-sword-boolean-key-for-the-new-sword-attack-input-a-currentlevel-number-field-in-game-state-and-any-necessary-sword-attack-state-e-g-swordactive-flag-sworddamagemultiplier-on-the-character-interface-so-the-levels-and-sword-systems-integrate-cleanly-with-existing-typescript-types",
+      "title": "Extend the KeyState and GameState type definitions in frontend/src/types/game.ts to include a 'sword' boolean key for the new sword attack input, a 'currentLevel' number field in game state, and any necessary sword-attack state (e.g., swordActive flag, swordDamageMultiplier) on the Character interface, so the levels and sword systems integrate cleanly with existing TypeScript types.",
+      "reqIds": [
+        "REQ-31"
+      ],
+      "version": 1
     }
   ],
   "new_feature_requests": [
@@ -257,6 +281,18 @@
     {
       "id": "AR-9",
       "summary": "Add more graphics/visual enhancements to the 3D fighting game (e.g., muzzle flashes, explosions, additional visual effects)",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-10",
+      "summary": "Add multiple levels/stages to the 3D fighting game",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-11",
+      "summary": "Add sword weapons for the player and/or enemies in the 3D fighting game",
       "reqIds": [],
       "status": "pending"
     }

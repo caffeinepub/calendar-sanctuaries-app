@@ -1,14 +1,18 @@
 # Specification
 
 ## Summary
-**Goal:** Add visual effects and graphical enhancements to the 3D fighting game to make combat feel more dynamic and impactful.
+**Goal:** Add a multi-level progression system and a sword weapon for UG to the existing 3D fighting game.
 
 **Planned changes:**
-- Add a muzzle flash effect at UG's gun muzzle position that appears for 2–4 frames when a projectile is fired
-- Add an explosion effect at the point of projectile impact on Sukuna using fiery/cursed-energy colors (orange, red, gold) that scales up and fades over ~0.4 seconds
-- Add a persistent pulsing cursed-energy aura around Sukuna using deep crimson/dark magenta emissive coloring that subtly scales in and out in a loop
-- Add a ground shockwave disc effect when either character lands from a jump, expanding radially and fading over ~0.3 seconds (blue for UG, red for Sukuna)
-- Add animated energy trails behind gun projectiles using electric gold/cyan emissive particles that fade within 0.2 seconds
-- Add a red screen-edge vignette flash overlay in the DOM layer that appears when UG takes damage and fades within ~0.5 seconds
+- Implement at least 3 levels with increasing difficulty (more/faster/stronger Sukuna enemies per level)
+- Show a level-transition screen between levels displaying the current level number
+- Show a final victory screen after completing all levels
+- Display the current level number in the HUD alongside existing health bars
+- Add a sword weapon for UG, activated via the `E` key and a new on-screen SWORD button
+- Render a 3D sword mesh visibly held in UG's hand when the sword is active
+- Show a sword slash arc/sweep emissive visual effect during sword attack animation
+- Sword attack deals increased damage and/or range compared to default melee; integrates with existing combatSystem.ts hit-detection
+- SWORD button in OnScreenControls follows existing mousedown/mouseup and touchstart/touchend pattern
+- Extend TypeScript types in `game.ts`: add `sword` boolean to KeyState, `currentLevel` to GameState, and `swordActive` flag to Character interface
 
-**User-visible outcome:** Players will see richer visual feedback during combat — muzzle flashes when shooting, explosions on hit, Sukuna's pulsing aura, landing shockwaves, projectile energy trails, and a red screen flash when UG takes damage.
+**User-visible outcome:** Players can fight through 3 progressively harder levels, see level-transition and victory screens, and use UG's sword (via `E` key or on-screen button) to deal extra damage with a visible slash effect.

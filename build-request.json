@@ -1,135 +1,81 @@
 {
   "kind": "build_request",
-  "title": "Add more visual effects and graphical enhancements to the 3D fighting game",
+  "title": "Add levels and sword weapons to the 3D fighting game",
   "projectName": "UG vs Sukuna",
   "priority": "normal",
   "requirements": [
     {
-      "id": "REQ-23",
-      "text": "Add a muzzle flash effect in Scene3D.tsx that fires when UG shoots — render a brief burst of bright emissive geometry (e.g., a small flattened sphere or cross of planes) at the gun muzzle position, visible for 2–4 frames then disappearing.",
+      "id": "REQ-29",
+      "text": "Implement a multi-level progression system in the 3D fighting game. The game should have at least 3 distinct levels/stages. Each level should increase in difficulty (e.g., more Sukuna enemies, faster/stronger enemies, or more enemies simultaneously). After defeating all enemies in a level, the player advances to the next level with a brief level-transition screen displaying the level number. Completing all levels triggers a final victory screen. The current level number should be displayed in the game HUD alongside the existing health bars.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-4"
+          "msg-latest"
         ],
         "quotes": [
-          "Add more graphics"
+          "Add levels and swords"
         ]
       },
       "acceptanceCriteria": [
-        "A visible flash appears at UG's gun muzzle position each time a projectile is fired.",
-        "The flash is visually bright/emissive and disappears within a few frames.",
-        "No persistent visual artifact is left after the flash fades."
+        "The game has at least 3 playable levels with increasing difficulty.",
+        "Defeating all enemies in a level advances the player to the next level.",
+        "A level-transition screen is shown between levels, displaying the current level number.",
+        "Completing all levels shows a final victory screen.",
+        "The current level number is shown in the HUD alongside health bars.",
+        "Enemy count, speed, or strength scales with each level."
       ]
     },
     {
-      "id": "REQ-24",
-      "text": "Add an explosion effect in Scene3D.tsx or ParticleSystem3D.tsx that triggers when a projectile hits Sukuna — render an expanding burst of emissive sphere/plane meshes or instanced particles with fiery colors (orange, red, gold) that scale up and fade out over ~0.4 seconds.",
+      "id": "REQ-30",
+      "text": "Add a sword weapon for UG in the 3D fighting game. UG should be able to equip and use a sword via a dedicated key (e.g., 'E' on keyboard). When the sword is active, UG's melee attack range and damage are increased compared to the default punch/kick. The sword should be rendered as a 3D mesh (e.g., a long, thin box or cylinder with an emissive blade material) visibly held in UG's hand. A sword slash visual effect (arc or sweep emissive geometry) should appear during the attack animation. The sword attack should also be triggerable via a new on-screen SWORD button in the OnScreenControls overlay, following the same mousedown/mouseup and touchstart/touchend pattern as existing buttons.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-4"
+          "msg-latest"
         ],
         "quotes": [
-          "Add more graphics"
+          "Add levels and swords"
         ]
       },
       "acceptanceCriteria": [
-        "An explosion visual effect appears at the point of projectile impact on Sukuna.",
-        "The explosion uses fiery/cursed-energy colors consistent with the existing theme.",
-        "The effect scales up and fades out within approximately 0.4 seconds.",
-        "No persistent geometry remains after the explosion animation completes."
+        "UG can activate a sword attack using a dedicated keyboard key (e.g., 'E').",
+        "A 3D sword mesh is rendered in UG's hand when the sword attack is triggered.",
+        "The sword attack deals more damage and/or has greater range than default melee attacks.",
+        "A visible sword slash arc or sweep emissive effect appears during the attack animation.",
+        "A SWORD button is added to the OnScreenControls overlay and triggers the sword attack on tap/click with mousedown/mouseup and touchstart/touchend support.",
+        "The sword attack integrates with the existing combat and hit-detection systems, causing Sukuna to lose health on a successful sword hit."
       ]
     },
     {
-      "id": "REQ-25",
-      "text": "Add a persistent cursed-energy aura effect around Sukuna in Scene3D.tsx — render a slowly pulsing semi-transparent emissive mesh (e.g., an enlarged sphere or distorted shell) in deep crimson/dark magenta around Sukuna's body that scales slightly in and out over time to convey supernatural energy.",
+      "id": "REQ-31",
+      "text": "Extend the KeyState and GameState type definitions in frontend/src/types/game.ts to include a 'sword' boolean key for the new sword attack input, a 'currentLevel' number field in game state, and any necessary sword-attack state (e.g., swordActive flag, swordDamageMultiplier) on the Character interface, so the levels and sword systems integrate cleanly with existing TypeScript types.",
       "target": "frontend",
       "source": {
         "messageIds": [
-          "msg-4"
+          "msg-latest"
         ],
         "quotes": [
-          "Add more graphics"
+          "Add levels and swords"
         ]
       },
       "acceptanceCriteria": [
-        "Sukuna has a visible pulsing aura effect rendered around their mesh at all times during battle.",
-        "The aura uses deep crimson or dark magenta emissive coloring.",
-        "The aura subtly scales or pulses in a looping animation rather than remaining static.",
-        "The effect does not obscure Sukuna's character mesh."
-      ]
-    },
-    {
-      "id": "REQ-26",
-      "text": "Add a ground impact shockwave effect in Scene3D.tsx triggered when either character lands from a jump — render a flat disc mesh that rapidly expands outward along the ground plane and fades in opacity over ~0.3 seconds, using the character's team color (blue for UG, red for Sukuna).",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-4"
-        ],
-        "quotes": [
-          "Add more graphics"
-        ]
-      },
-      "acceptanceCriteria": [
-        "A shockwave disc appears on the ground at the character's landing position when they land from a jump.",
-        "The disc expands radially and fades out over approximately 0.3 seconds.",
-        "UG's shockwave uses blue/cool coloring; Sukuna's uses red/warm coloring.",
-        "No shockwave is shown when the character is simply walking (only on jump landing)."
-      ]
-    },
-    {
-      "id": "REQ-27",
-      "text": "Add animated energy projectile trails in Scene3D.tsx — as each gun projectile travels, emit a stream of small emissive particles (or use a tapered instanced mesh ribbon) behind it in electric gold/cyan color that fade quickly, reinforcing the sense of speed and energy.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-4"
-        ],
-        "quotes": [
-          "Add more graphics"
-        ]
-      },
-      "acceptanceCriteria": [
-        "Traveling projectiles have a visible trailing particle or ribbon effect behind them.",
-        "Trail uses electric gold or cyan emissive coloring.",
-        "Trail particles fade quickly so they don't linger beyond 0.2 seconds after the projectile has passed.",
-        "The trail does not appear for melee attacks, only for gun projectiles."
-      ]
-    },
-    {
-      "id": "REQ-28",
-      "text": "Add a dynamic screen-edge vignette or flash overlay in the React DOM layer (App.tsx or FightingGame.tsx) that briefly flashes red at the edges of the viewport when UG takes damage, giving tactile feedback for being hit.",
-      "target": "frontend",
-      "source": {
-        "messageIds": [
-          "msg-4"
-        ],
-        "quotes": [
-          "Add more graphics"
-        ]
-      },
-      "acceptanceCriteria": [
-        "A red semi-transparent vignette/border flash is visible around the screen edges when UG takes a hit.",
-        "The flash fades out within approximately 0.5 seconds.",
-        "The effect does not block game controls or obscure health bars.",
-        "The effect triggers only when UG loses health, not when Sukuna takes damage."
+        "KeyState includes a 'sword' boolean field.",
+        "GameState or equivalent top-level state includes a 'currentLevel' number field.",
+        "Character interface includes a swordActive flag or equivalent sword-attack state.",
+        "All existing usages of KeyState and Character remain type-safe after the additions."
       ]
     }
   ],
   "constraints": [
-    "All new effects must be consistent with the existing bold, dramatic, cursed-energy visual theme.",
-    "New particle/mesh effects must not significantly degrade rendering performance — reuse instanced meshes where possible.",
-    "Do not modify frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, or any files under frontend/src/components/ui.",
-    "Game logic (physics, AI, combat, health) must remain unchanged."
+    "Do not modify files under frontend/src/hooks/useInternetIdentity.ts, frontend/src/hooks/useActor.ts, frontend/src/main.tsx, or frontend/src/components/ui.",
+    "Retain all existing keyboard controls, on-screen controls, gun system, health bar UI, and visual effects without regression.",
+    "The sword attack must integrate with the existing combatSystem.ts hit-detection logic rather than bypass it."
   ],
   "nonGoals": [
-    "No new gameplay mechanics or weapons.",
-    "No changes to backend Motoko code.",
-    "No changes to calendar or sanctuary features.",
-    "No audio/sound effects.",
-    "No changes to on-screen control layout or keyboard bindings."
+    "Adding new enemy character types other than Sukuna.",
+    "Multiplayer or networked gameplay.",
+    "Backend changes — level and sword state is purely frontend/client-side.",
+    "Changing the calendar or sanctuary features."
   ],
   "imageRequirements": {
     "required": [],

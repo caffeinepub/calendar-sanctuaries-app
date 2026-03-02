@@ -1,16 +1,27 @@
 {
   "kind": "spec_vs_diff_report",
   "version": "1.0",
-  "generatedAt": "2026-03-02T02:01:01.890Z",
-  "summary": "The diff implements most of the requested visual effects. REQ-23 (muzzle flash), REQ-24 (explosion), REQ-25 (Sukuna aura), REQ-26 (ground shockwave), REQ-27 (projectile trails), and REQ-28 (damage vignette) all appear to have supporting infrastructure added in game types, FightingGame.tsx, and Scene3D.tsx. However, the diff is truncated for both Scene3D.tsx and FightingGame.tsx, making it impossible to fully verify the rendering implementations within Scene3D.tsx. The type system (game.ts) and state tracking (FightingGame.tsx) are clearly updated to support all six effects, and the file summaries confirm their presence.",
+  "generatedAt": "2026-03-02T02:15:45.246Z",
+  "summary": "The diff implements all three requirements (REQ-29, REQ-30, REQ-31) with good coverage. Multi-level progression, sword weapon, and type extensions are all present. One minor concern: REQ-29 specifies 'more enemies simultaneously' as a possible difficulty scaling mechanism, and LEVEL_CONFIGS shows enemyCount=1 for all 3 levels (only speed/strength/health scale), but the requirement lists this as an example so speed/strength/health scaling is sufficient. All acceptance criteria appear met.",
   "missing_requirements": [],
   "hallucinated_features": [],
-  "confidence": 0.72,
+  "confidence": 0.92,
   "changed_files": [
     "frontend-file-summaries.txt",
+    "frontend/src/components/Character3D.tsx",
     "frontend/src/components/FightingGame.tsx",
+    "frontend/src/components/GameHUD.tsx",
+    "frontend/src/components/LevelTransitionScreen.tsx",
+    "frontend/src/components/OnScreenControls.tsx",
+    "frontend/src/components/ParticleSystem3D.tsx",
     "frontend/src/components/Scene3D.tsx",
+    "frontend/src/components/VictoryScreen.tsx",
+    "frontend/src/hooks/useKeyboardControls.ts",
+    "frontend/src/index.css",
     "frontend/src/types/game.ts",
+    "frontend/src/utils/combatSystem.ts",
+    "frontend/src/utils/enemyAI.ts",
+    "frontend/src/utils/gamePhysics.ts",
     "project_state.json"
   ]
 }

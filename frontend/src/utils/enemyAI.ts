@@ -1,79 +1,119 @@
-import { Enemy, Character, AttackType, FacingDirection } from '../types/game';
+import { Character } from '../types/game';
 import { GROUND_LEVEL } from './gamePhysics';
 
-const GRAVITY = 1800;
-const ENEMY_SPEED = 160;
-const ATTACK_RANGE = 110;
-const RETREAT_RANGE = 60;
+export type EnemyAIState = 'idle' | 'approach' | 'attack' | 'retreat' | 'jump';
 
-export function updateEnemyAI(enemy: Enemy, player: Character, dt: number): Enemy {
-  let { x, y, z, vx, vy, vz, isOnGround, facing, attackType, attackTimer, hitTimer, aiState, aiTimer, attackCooldown } = enemy;
+export interface EnemyAIConfig {
+  moveSpeed: number;
+  attackRange: number;
+  attackCooldown: number;
+  retreatDistance: number;
+  jumpChance: number;
+  attackDamage: number;
+}
 
-  // Timers
-  if (attackTimer > 0) attackTimer -= dt;
-  if (hitTimer > 0) hitTimer -= dt;
-  if (aiTimer > 0) aiTimer -= dt;
-  if (attackCooldown > 0) attackCooldown -= dt;
+export const BASE_ENEMY_CONFIG: EnemyAIConfig = {
+  moveSpeed: 2.2,
+  attackRange: 1.4,
+  attackCooldown: 1.2,
+  retreatDistance: 0.8,
+  jumpChance: 0.008,
+  attackDamage: 12,
+};
 
-  // Hit stagger
-  if (hitTimer > 0) {
-    aiState = 'stagger';
-    vx = vx * 0.8;
-  } else {
-    const dist = Math.abs(player.x - x);
+export function getEnemyConfigForLevel(level: number): EnemyAIConfig {
+  const speedMult = 1 + (level - 1) * 0.35;
+  const damageMult = 1 + (level - 1) * 0.4;
+  return {
+    moveSpeed: BASE_ENEMY_CONFIG.moveSpeed * speedMult,
+    attackRange: BASE_ENEMY_CONFIG.attackRange,
+    attackCooldown: Math.max(0.6, BASE_ENEMY_CONFIG.attackCooldown - (level - 1) * 0.2),
+    retreatDistance: BASE_ENEMY_CONFIG.retreatDistance,
+    jumpChance: BASE_ENEMY_CONFIG.jumpChance * (1 + (level - 1) * 0.3),
+    attackDamage: BASE_ENEMY_CONFIG.attackDamage * damageMult,
+  };
+}
 
-    if (aiState === 'stagger' && hitTimer <= 0) {
-      aiState = 'approach';
-    }
+interface EnemyAIResult {
+  enemy: Character;
+  didAttack: boolean;
+  attackDamage: number;
+}
 
-    if (aiState !== 'stagger') {
-      if (dist < RETREAT_RANGE) {
-        aiState = 'retreat';
-      } else if (dist <= ATTACK_RANGE && attackCooldown <= 0) {
-        aiState = 'attack';
-      } else {
-        aiState = 'approach';
-      }
-    }
+export function updateEnemyAI(
+  enemy: Character,
+  player: Character,
+  delta: number,
+  aiCooldownRef: { current: number },
+  config?: Partial<EnemyAIConfig>
+): EnemyAIResult {
+  const cfg: EnemyAIConfig = { ...BASE_ENEMY_CONFIG, ...config };
 
-    // Movement
-    if (aiState === 'approach') {
-      const dir = player.x > x ? 1 : -1;
-      vx = dir * ENEMY_SPEED;
-      facing = dir > 0 ? FacingDirection.RIGHT : FacingDirection.LEFT;
-    } else if (aiState === 'retreat') {
-      const dir = player.x > x ? -1 : 1;
-      vx = dir * ENEMY_SPEED * 0.7;
-      facing = player.x > x ? FacingDirection.LEFT : FacingDirection.RIGHT;
-    } else if (aiState === 'attack') {
-      vx = vx * 0.5;
-      facing = player.x > x ? FacingDirection.RIGHT : FacingDirection.LEFT;
-      if (attackTimer <= 0 && attackCooldown <= 0) {
-        attackType = Math.random() > 0.5 ? AttackType.PUNCH : AttackType.KICK;
-        attackTimer = attackType === AttackType.PUNCH ? 0.35 : 0.45;
-        attackCooldown = 1.2 + Math.random() * 0.8;
-      }
-    }
-  }
+  let { x, y, z, vx, vy, vz, facing, isGrounded } = enemy;
+  let didAttack = false;
+  let attackDamage = 0;
+
+  const dx = player.x - x;
+  const dist = Math.abs(dx);
+
+  // Reduce cooldown
+  aiCooldownRef.current = Math.max(0, aiCooldownRef.current - delta);
 
   // Gravity
-  vy += GRAVITY * dt;
-  x += vx * dt;
-  y += vy * dt;
-  // z stays fixed
-
-  if (y >= GROUND_LEVEL) {
+  vy -= 20 * delta;
+  y += vy * delta;
+  if (y <= GROUND_LEVEL) {
     y = GROUND_LEVEL;
     vy = 0;
-    isOnGround = true;
+    isGrounded = true;
+  } else {
+    isGrounded = false;
   }
 
-  // Wall bounds
-  x = Math.max(0, Math.min(900 - enemy.width, x));
+  // Face player
+  facing = dx > 0 ? 1 : -1;
 
-  if (attackTimer <= 0) {
-    attackType = AttackType.NONE;
+  if (dist > cfg.attackRange) {
+    // Approach player
+    vx = facing * cfg.moveSpeed;
+
+    // Occasional jump
+    if (isGrounded && Math.random() < cfg.jumpChance) {
+      vy = 7;
+      isGrounded = false;
+    }
+  } else {
+    // In attack range
+    vx = 0;
+
+    if (aiCooldownRef.current <= 0) {
+      // Attack
+      didAttack = true;
+      attackDamage = cfg.attackDamage;
+      aiCooldownRef.current = cfg.attackCooldown;
+    } else if (dist < cfg.retreatDistance) {
+      // Too close, retreat
+      vx = -facing * cfg.moveSpeed * 0.5;
+    }
   }
 
-  return { ...enemy, x, y, z, vx, vy, vz, isOnGround, facing, attackType, attackTimer, hitTimer, aiState, aiTimer, attackCooldown };
+  x += vx * delta;
+  // Keep z at 0 for side-view
+  z = 0;
+  vz = 0;
+
+  // Arena bounds
+  x = Math.max(-4, Math.min(4, x));
+
+  return {
+    enemy: {
+      ...enemy,
+      x, y, z, vx, vy, vz,
+      facing,
+      isGrounded,
+      isJumping: !isGrounded,
+    },
+    didAttack,
+    attackDamage,
+  };
 }

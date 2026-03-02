@@ -1,126 +1,120 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Add more visual effects and graphical enhancements to the 3D fighting game",
+  "title": "Add levels and sword weapons to the 3D fighting game",
   "requirements": [
     {
-      "id": "REQ-23",
-      "summary": "Add muzzle flash effect when UG shoots",
+      "id": "REQ-29",
+      "summary": "Implement multi-level progression system with at least 3 distinct levels, increasing difficulty, level-transition screens, victory screen, and HUD display of current level number",
       "acceptanceCriteria": [
-        "A visible flash appears at UG's gun muzzle position each time a projectile is fired.",
-        "The flash is visually bright/emissive and disappears within a few frames.",
-        "No persistent visual artifact is left after the flash fades."
+        "The game has at least 3 playable levels with increasing difficulty.",
+        "Defeating all enemies in a level advances the player to the next level.",
+        "A level-transition screen is shown between levels, displaying the current level number.",
+        "Completing all levels shows a final victory screen.",
+        "The current level number is shown in the HUD alongside health bars.",
+        "Enemy count, speed, or strength scales with each level."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/Scene3D.tsx",
+          "path": "frontend/src/types/game.ts",
           "operation": "modify",
-          "description": "Add a MuzzleFlash component that renders a bright emissive geometry (small flattened sphere or cross of planes) at the gun muzzle position. Track projectile creation events to trigger the flash, render it for 2-4 frames using a frame counter or time-based opacity fade, then remove it. Position the flash relative to UG's gun mesh position and ensure it uses emissive material with high intensity."
-        }
-      ]
-    },
-    {
-      "id": "REQ-24",
-      "summary": "Add explosion effect when projectile hits Sukuna",
-      "acceptanceCriteria": [
-        "An explosion visual effect appears at the point of projectile impact on Sukuna.",
-        "The explosion uses fiery/cursed-energy colors consistent with the existing theme.",
-        "The effect scales up and fades out within approximately 0.4 seconds.",
-        "No persistent geometry remains after the explosion animation completes."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/components/Scene3D.tsx",
-          "operation": "modify",
-          "description": "Add an ExplosionEffect component that renders expanding emissive sphere/plane meshes with fiery colors (orange, red, gold). Listen for projectile hit events on Sukuna and spawn explosion instances at the hit position. Animate each explosion by scaling up and reducing opacity over 0.4 seconds, then remove the mesh. Use instanced meshes if multiple explosions can occur simultaneously."
-        },
-        {
-          "path": "frontend/src/components/ParticleSystem3D.tsx",
-          "operation": "modify",
-          "description": "Extend the particle system to support explosion particle bursts. Add a new particle type or effect mode that emits a radial burst of particles with fiery colors at a given position. Configure particles to scale up and fade out over approximately 0.4 seconds to match the explosion effect timing."
-        }
-      ]
-    },
-    {
-      "id": "REQ-25",
-      "summary": "Add persistent cursed-energy aura effect around Sukuna",
-      "acceptanceCriteria": [
-        "Sukuna has a visible pulsing aura effect rendered around their mesh at all times during battle.",
-        "The aura uses deep crimson or dark magenta emissive coloring.",
-        "The aura subtly scales or pulses in a looping animation rather than remaining static.",
-        "The effect does not obscure Sukuna's character mesh."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/components/Scene3D.tsx",
-          "operation": "modify",
-          "description": "Add a CursedEnergyAura component that renders a semi-transparent emissive mesh (enlarged sphere or distorted shell) around Sukuna's position. Use deep crimson/dark magenta color with emissive material. Animate the aura scale using a sine wave or easing function to pulse between 0.95 and 1.05 scale over 2-3 seconds in a loop. Position the aura to follow Sukuna's mesh and ensure it renders behind the character (adjust renderOrder or use transparency blending)."
-        }
-      ]
-    },
-    {
-      "id": "REQ-26",
-      "summary": "Add ground impact shockwave effect when characters land from jump",
-      "acceptanceCriteria": [
-        "A shockwave disc appears on the ground at the character's landing position when they land from a jump.",
-        "The disc expands radially and fades out over approximately 0.3 seconds.",
-        "UG's shockwave uses blue/cool coloring; Sukuna's uses red/warm coloring.",
-        "No shockwave is shown when the character is simply walking (only on jump landing)."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/components/Scene3D.tsx",
-          "operation": "modify",
-          "description": "Add a ShockwaveEffect component that renders a flat disc mesh on the ground plane. Detect landing events by checking when a character's velocityY transitions from negative to zero/positive while grounded. Spawn a shockwave instance at the landing position with team-colored material (blue for UG, red for Sukuna). Animate the disc by scaling its radius from near-zero to 2-3 units and fading opacity from 1 to 0 over 0.3 seconds, then remove the mesh."
+          "description": "Add currentLevel number field to GameState interface to track the active level. Add levelDifficulty configuration types defining enemy count, speed multiplier, and strength for each level."
         },
         {
           "path": "frontend/src/components/FightingGame.tsx",
           "operation": "modify",
-          "description": "Add landing detection logic to track when player and enemy transition from airborne to grounded state. Pass landing events to Scene3D via a callback or state update so shockwave effects can be triggered at the correct position and time. Ensure landing is only detected after a jump, not during normal walking."
-        }
-      ]
-    },
-    {
-      "id": "REQ-27",
-      "summary": "Add animated energy projectile trails",
-      "acceptanceCriteria": [
-        "Traveling projectiles have a visible trailing particle or ribbon effect behind them.",
-        "Trail uses electric gold or cyan emissive coloring.",
-        "Trail particles fade quickly so they don't linger beyond 0.2 seconds after the projectile has passed.",
-        "The trail does not appear for melee attacks, only for gun projectiles."
-      ],
-      "file_operations": [
+          "description": "Add level progression logic that initializes currentLevel at 1, tracks enemies defeated per level, and advances to the next level when all enemies are cleared. Configure enemy spawn parameters (count, speed, strength) based on currentLevel using difficulty scaling rules. Trigger level-transition and victory screens at appropriate times. Integrate the LevelTransitionScreen and VictoryScreen components into the render tree with conditional visibility based on game state."
+        },
+        {
+          "path": "frontend/src/components/LevelTransitionScreen.tsx",
+          "operation": "create",
+          "description": "Create a React component that displays a full-screen overlay showing the current level number during level transitions. Use a fade-in/fade-out animation and auto-dismiss after 2-3 seconds to resume gameplay. Style with theme-consistent colors and typography from index.css."
+        },
+        {
+          "path": "frontend/src/components/VictoryScreen.tsx",
+          "operation": "create",
+          "description": "Create a React component that displays a full-screen victory overlay when all levels are completed. Show congratulatory text, final stats (if available), and a replay or return-to-menu button. Style with emissive glow effects and fighting-game theme colors."
+        },
+        {
+          "path": "frontend/src/components/GameHUD.tsx",
+          "operation": "create",
+          "description": "Create a React component that renders the in-game HUD overlay, displaying the current level number alongside existing health bars for UG and enemies. Position the level indicator in the top-center or top-left of the screen using absolute positioning. Use consistent typography and color scheme from index.css."
+        },
         {
           "path": "frontend/src/components/Scene3D.tsx",
           "operation": "modify",
-          "description": "Add a ProjectileTrail component that renders a stream of small emissive particles or a tapered ribbon mesh behind each gun projectile. As projectiles move, emit trail particles at regular intervals (every frame or every few frames) at the projectile's current position. Use electric gold/cyan emissive material and fade particles over 0.2 seconds. Alternatively, use a ribbon/trail mesh that stretches from the projectile's current position to its previous positions, fading the oldest segments."
+          "description": "Integrate the GameHUD component into the scene render tree so the level number is visible during gameplay. Ensure the HUD overlay renders above the 3D canvas without obscuring critical gameplay elements."
         },
         {
-          "path": "frontend/src/components/ParticleSystem3D.tsx",
+          "path": "frontend/src/utils/enemyAI.ts",
           "operation": "modify",
-          "description": "Extend the particle system to support trail particles. Add a method to spawn trail particles at a given position with a short lifetime (0.2 seconds). Configure trail particles to use electric gold or cyan colors and fade out quickly. Ensure trail particles are visually distinct from impact particles."
+          "description": "Add support for per-enemy speed and strength multipliers based on the current level difficulty. Accept level-scaled parameters (moveSpeed, attackDamage) and apply them during state transitions and attack calculations. Ensure backward compatibility with existing AI behavior."
         }
       ]
     },
     {
-      "id": "REQ-28",
-      "summary": "Add dynamic screen-edge vignette flash overlay when UG takes damage",
+      "id": "REQ-30",
+      "summary": "Add sword weapon for UG with dedicated keyboard key (E) and on-screen SWORD button, rendering a 3D sword mesh in UG's hand, increasing melee range and damage, and displaying a sword slash visual effect during attacks",
       "acceptanceCriteria": [
-        "A red semi-transparent vignette/border flash is visible around the screen edges when UG takes a hit.",
-        "The flash fades out within approximately 0.5 seconds.",
-        "The effect does not block game controls or obscure health bars.",
-        "The effect triggers only when UG loses health, not when Sukuna takes damage."
+        "UG can activate a sword attack using a dedicated keyboard key (e.g., 'E').",
+        "A 3D sword mesh is rendered in UG's hand when the sword attack is triggered.",
+        "The sword attack deals more damage and/or has greater range than default melee attacks.",
+        "A visible sword slash arc or sweep emissive effect appears during the attack animation.",
+        "A SWORD button is added to the OnScreenControls overlay and triggers the sword attack on tap/click with mousedown/mouseup and touchstart/touchend support.",
+        "The sword attack integrates with the existing combat and hit-detection systems, causing Sukuna to lose health on a successful sword hit."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/components/FightingGame.tsx",
+          "path": "frontend/src/types/game.ts",
           "operation": "modify",
-          "description": "Add state to track when UG takes damage and trigger a damage flash effect. Detect when player health decreases and set a flash trigger timestamp. Render a DOM overlay (absolutely positioned div covering the viewport) with a radial gradient vignette effect in red. Animate the overlay's opacity from 0.6 to 0 over 0.5 seconds using CSS transitions or requestAnimationFrame. Ensure the overlay has pointer-events: none so it doesn't block controls."
+          "description": "Add 'sword' boolean field to KeyState interface to track sword attack input. Add swordActive boolean and swordDamageMultiplier number fields to the Character interface to represent sword weapon state."
         },
         {
-          "path": "frontend/src/App.tsx",
+          "path": "frontend/src/hooks/useKeyboardControls.ts",
           "operation": "modify",
-          "description": "If the damage flash overlay is implemented as a separate component, wire it into App.tsx to receive damage events from FightingGame. Alternatively, ensure the overlay is rendered within FightingGame itself and does not interfere with the header or footer layout."
+          "description": "Extend keyboard event listeners to track the 'E' key state and map it to the 'sword' field in the returned KeyState ref. Ensure the sword key is handled with the same press/release pattern as existing action keys."
+        },
+        {
+          "path": "frontend/src/components/OnScreenControls.tsx",
+          "operation": "modify",
+          "description": "Add a SWORD button to the on-screen controls overlay following the same mousedown/mouseup and touchstart/touchend event pattern as existing buttons (punch, kick, gun). Position the button in a logical location within the controls layout. Use an appropriate SVG icon or label for the sword action. Update the KeyState ref when the button is pressed/released."
+        },
+        {
+          "path": "frontend/src/components/Character3D.tsx",
+          "operation": "modify",
+          "description": "Add a 3D sword mesh (e.g., a long thin box or cylinder with an emissive blade material) as a child of UG's hand or arm mesh. The sword should only be visible when the character's swordActive flag is true. Include a SwordSlashEffect component that renders an arc or sweep emissive geometry during the sword attack animation, positioned relative to the sword mesh. Use React Three Fiber's useFrame or animation state to trigger the slash visual when the sword attack is active."
+        },
+        {
+          "path": "frontend/src/components/FightingGame.tsx",
+          "operation": "modify",
+          "description": "Add logic to handle the sword key state from KeyState ref. When the sword key is pressed, set the player character's swordActive flag to true and trigger a sword attack animation. Pass the swordActive state and swordDamageMultiplier to the combat system for hit detection and damage calculation. Ensure the sword attack respects existing attack cooldowns and animation timing."
+        },
+        {
+          "path": "frontend/src/utils/combatSystem.ts",
+          "operation": "modify",
+          "description": "Extend melee hit detection logic to check if the player's swordActive flag is true. If a sword attack is active, increase the attack hitbox range and apply the swordDamageMultiplier to the base damage. Ensure the sword attack triggers the same hit particles, knockback, and damage flash effects as existing melee attacks. Maintain compatibility with the existing combatSystem interface."
+        },
+        {
+          "path": "frontend/src/utils/gamePhysics.ts",
+          "operation": "modify",
+          "description": "Update the attack hitbox calculation utility to accept an optional swordActive flag. When the sword is active, extend the hitbox range (e.g., 1.5x or 2x the default melee range) to reflect the sword's longer reach. Ensure the extended hitbox integrates cleanly with the existing rectangle overlap detection."
+        }
+      ]
+    },
+    {
+      "id": "REQ-31",
+      "summary": "Extend TypeScript type definitions in game.ts to include 'sword' boolean in KeyState, 'currentLevel' number in GameState, and sword-attack state fields (swordActive, swordDamageMultiplier) in Character interface",
+      "acceptanceCriteria": [
+        "KeyState includes a 'sword' boolean field.",
+        "GameState or equivalent top-level state includes a 'currentLevel' number field.",
+        "Character interface includes a swordActive flag or equivalent sword-attack state.",
+        "All existing usages of KeyState and Character remain type-safe after the additions."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/types/game.ts",
+          "operation": "modify",
+          "description": "Add 'sword: boolean' field to the KeyState interface. Add 'currentLevel: number' field to the GameState interface. Add 'swordActive: boolean' and 'swordDamageMultiplier: number' fields to the Character interface. Ensure all new fields are properly typed and integrate cleanly with existing type definitions without breaking type-safety in consuming code."
         }
       ]
     }

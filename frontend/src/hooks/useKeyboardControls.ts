@@ -1,14 +1,17 @@
 import { useEffect, useRef } from 'react';
 import { KeyState } from '../types/game';
 
-export function useKeyboardControls(): React.MutableRefObject<KeyState> {
+export function useKeyboardControls() {
   const keysRef = useRef<KeyState>({
     left: false,
     right: false,
     up: false,
+    down: false,
     punch: false,
     kick: false,
+    block: false,
     shoot: false,
+    sword: false,
   });
 
   useEffect(() => {
@@ -17,32 +20,34 @@ export function useKeyboardControls(): React.MutableRefObject<KeyState> {
         case 'ArrowLeft':
         case 'KeyA':
           keysRef.current.left = true;
-          e.preventDefault();
           break;
         case 'ArrowRight':
         case 'KeyD':
           keysRef.current.right = true;
-          e.preventDefault();
           break;
         case 'ArrowUp':
         case 'KeyW':
         case 'Space':
           keysRef.current.up = true;
-          e.preventDefault();
+          break;
+        case 'ArrowDown':
+        case 'KeyS':
+          keysRef.current.down = true;
           break;
         case 'KeyJ':
-        case 'KeyZ':
           keysRef.current.punch = true;
-          e.preventDefault();
           break;
         case 'KeyK':
-        case 'KeyX':
           keysRef.current.kick = true;
-          e.preventDefault();
+          break;
+        case 'KeyL':
+          keysRef.current.block = true;
           break;
         case 'KeyF':
           keysRef.current.shoot = true;
-          e.preventDefault();
+          break;
+        case 'KeyE':
+          keysRef.current.sword = true;
           break;
       }
     };
@@ -62,16 +67,24 @@ export function useKeyboardControls(): React.MutableRefObject<KeyState> {
         case 'Space':
           keysRef.current.up = false;
           break;
+        case 'ArrowDown':
+        case 'KeyS':
+          keysRef.current.down = false;
+          break;
         case 'KeyJ':
-        case 'KeyZ':
           keysRef.current.punch = false;
           break;
         case 'KeyK':
-        case 'KeyX':
           keysRef.current.kick = false;
+          break;
+        case 'KeyL':
+          keysRef.current.block = false;
           break;
         case 'KeyF':
           keysRef.current.shoot = false;
+          break;
+        case 'KeyE':
+          keysRef.current.sword = false;
           break;
       }
     };

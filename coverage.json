@@ -1,84 +1,70 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-03-02T02:01:01.893Z",
+  "generatedAt": "2026-03-02T02:15:45.250Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
   },
   "requirements": {
-    "total": 6,
-    "implemented": 6,
+    "total": 3,
+    "implemented": 3,
     "items": [
       {
-        "id": "REQ-23",
-        "summary": "Add a muzzle flash effect in Scene3D.tsx that fires when UG shoots — render a brief burst of bright emissive geometry (e.g., a small flattened sphere or cross of planes) at the gun muzzle position, visible for 2–4 frames then disappearing.",
+        "id": "REQ-29",
+        "summary": "Implement a multi-level progression system in the 3D fighting game. The game should have at least 3 distinct levels/stages. Each level should increase in difficulty (e.g., more Sukuna enemies, faster/stronger enemies, or more enemies simultaneously). After defeating all enemies in a level, the player advances to the next level with a brief level-transition screen displaying the level number. Completing all levels triggers a final victory screen. The current level number should be displayed in the game HUD alongside the existing health bars.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/components/Scene3D.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/components/Scene3D.tsx"
-        ]
-      },
-      {
-        "id": "REQ-24",
-        "summary": "Add an explosion effect in Scene3D.tsx or ParticleSystem3D.tsx that triggers when a projectile hits Sukuna — render an expanding burst of emissive sphere/plane meshes or instanced particles with fiery colors (orange, red, gold) that scale up and fade out over ~0.4 seconds.",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/components/Scene3D.tsx",
-          "frontend/src/components/ParticleSystem3D.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/components/Scene3D.tsx"
-        ]
-      },
-      {
-        "id": "REQ-25",
-        "summary": "Add a persistent cursed-energy aura effect around Sukuna in Scene3D.tsx — render a slowly pulsing semi-transparent emissive mesh (e.g., an enlarged sphere or distorted shell) in deep crimson/dark magenta around Sukuna's body that scales slightly in and out over time to convey supernatural energy.",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/components/Scene3D.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/components/Scene3D.tsx"
-        ]
-      },
-      {
-        "id": "REQ-26",
-        "summary": "Add a ground impact shockwave effect in Scene3D.tsx triggered when either character lands from a jump — render a flat disc mesh that rapidly expands outward along the ground plane and fades in opacity over ~0.3 seconds, using the character's team color (blue for UG, red for Sukuna).",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/components/Scene3D.tsx",
-          "frontend/src/components/FightingGame.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/components/Scene3D.tsx",
-          "frontend/src/components/FightingGame.tsx"
-        ]
-      },
-      {
-        "id": "REQ-27",
-        "summary": "Add animated energy projectile trails in Scene3D.tsx — as each gun projectile travels, emit a stream of small emissive particles (or use a tapered instanced mesh ribbon) behind it in electric gold/cyan color that fade quickly, reinforcing the sense of speed and energy.",
-        "status": "implemented",
-        "plannedFiles": [
-          "frontend/src/components/Scene3D.tsx",
-          "frontend/src/components/ParticleSystem3D.tsx"
-        ],
-        "matchedFiles": [
-          "frontend/src/components/Scene3D.tsx"
-        ]
-      },
-      {
-        "id": "REQ-28",
-        "summary": "Add a dynamic screen-edge vignette or flash overlay in the React DOM layer (App.tsx or FightingGame.tsx) that briefly flashes red at the edges of the viewport when UG takes damage, giving tactile feedback for being hit.",
-        "status": "implemented",
-        "plannedFiles": [
+          "frontend/src/types/game.ts",
           "frontend/src/components/FightingGame.tsx",
-          "frontend/src/App.tsx"
+          "frontend/src/components/LevelTransitionScreen.tsx",
+          "frontend/src/components/VictoryScreen.tsx",
+          "frontend/src/components/GameHUD.tsx",
+          "frontend/src/components/Scene3D.tsx",
+          "frontend/src/utils/enemyAI.ts"
         ],
         "matchedFiles": [
-          "frontend/src/components/FightingGame.tsx"
+          "frontend/src/types/game.ts",
+          "frontend/src/components/FightingGame.tsx",
+          "frontend/src/components/LevelTransitionScreen.tsx",
+          "frontend/src/components/VictoryScreen.tsx",
+          "frontend/src/components/GameHUD.tsx",
+          "frontend/src/components/Scene3D.tsx",
+          "frontend/src/utils/enemyAI.ts"
+        ]
+      },
+      {
+        "id": "REQ-30",
+        "summary": "Add a sword weapon for UG in the 3D fighting game. UG should be able to equip and use a sword via a dedicated key (e.g., 'E' on keyboard). When the sword is active, UG's melee attack range and damage are increased compared to the default punch/kick. The sword should be rendered as a 3D mesh (e.g., a long, thin box or cylinder with an emissive blade material) visibly held in UG's hand. A sword slash visual effect (arc or sweep emissive geometry) should appear during the attack animation. The sword attack should also be triggerable via a new on-screen SWORD button in the OnScreenControls overlay, following the same mousedown/mouseup and touchstart/touchend pattern as existing buttons.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/types/game.ts",
+          "frontend/src/hooks/useKeyboardControls.ts",
+          "frontend/src/components/OnScreenControls.tsx",
+          "frontend/src/components/Character3D.tsx",
+          "frontend/src/components/FightingGame.tsx",
+          "frontend/src/utils/combatSystem.ts",
+          "frontend/src/utils/gamePhysics.ts"
+        ],
+        "matchedFiles": [
+          "frontend/src/types/game.ts",
+          "frontend/src/hooks/useKeyboardControls.ts",
+          "frontend/src/components/OnScreenControls.tsx",
+          "frontend/src/components/Character3D.tsx",
+          "frontend/src/components/FightingGame.tsx",
+          "frontend/src/utils/combatSystem.ts",
+          "frontend/src/utils/gamePhysics.ts"
+        ]
+      },
+      {
+        "id": "REQ-31",
+        "summary": "Extend the KeyState and GameState type definitions in frontend/src/types/game.ts to include a 'sword' boolean key for the new sword attack input, a 'currentLevel' number field in game state, and any necessary sword-attack state (e.g., swordActive flag, swordDamageMultiplier) on the Character interface, so the levels and sword systems integrate cleanly with existing TypeScript types.",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/src/types/game.ts"
+        ],
+        "matchedFiles": [
+          "frontend/src/types/game.ts"
         ]
       }
     ]
@@ -88,9 +74,20 @@
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
+    "frontend/src/components/Character3D.tsx",
     "frontend/src/components/FightingGame.tsx",
+    "frontend/src/components/GameHUD.tsx",
+    "frontend/src/components/LevelTransitionScreen.tsx",
+    "frontend/src/components/OnScreenControls.tsx",
+    "frontend/src/components/ParticleSystem3D.tsx",
     "frontend/src/components/Scene3D.tsx",
+    "frontend/src/components/VictoryScreen.tsx",
+    "frontend/src/hooks/useKeyboardControls.ts",
+    "frontend/src/index.css",
     "frontend/src/types/game.ts",
+    "frontend/src/utils/combatSystem.ts",
+    "frontend/src/utils/enemyAI.ts",
+    "frontend/src/utils/gamePhysics.ts",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",

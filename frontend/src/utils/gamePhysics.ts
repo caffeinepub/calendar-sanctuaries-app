@@ -1,109 +1,85 @@
-import { Character, Enemy, KeyState, AttackType, FacingDirection } from '../types/game';
+import { Character, KeyState } from '../types/game';
 
-const GRAVITY = 1800;
-const JUMP_FORCE = -620;
-const MOVE_SPEED = 280;
-
-// 3D world coordinates
-// X: left/right (-7 to 7 in world units, mapped from 0-900 canvas)
-// Y: up/down (0 = ground, positive = up in world)
-// Z: fixed at 0 for side-view
-
-// Ground level in game units (y = 0 means character bottom is at ground)
 export const GROUND_LEVEL = 0;
-
-// World bounds in game units (x range)
-export const WORLD_MIN_X = 0;
-export const WORLD_MAX_X = 900;
-
-// Canvas width kept for compatibility
 export const CANVAS_W = 900;
+export const ARENA_LEFT = -4;
+export const ARENA_RIGHT = 4;
+export const JUMP_VELOCITY = 8;
+export const GRAVITY = -20;
+export const MOVE_SPEED = 3.5;
 
-export function applyPlayerPhysics(
-  player: Character,
-  keys: KeyState,
-  dt: number
-): Character {
-  let { x, y, z, vx, vy, vz, isOnGround, facing, attackTimer, hitTimer } = player;
+export function applyPhysics(char: Character, delta: number): Character {
+  let { x, y, vx, vy, isGrounded, isJumping } = char;
+
+  // Apply gravity
+  vy += GRAVITY * delta;
+  y += vy * delta;
+
+  // Ground collision
+  if (y <= GROUND_LEVEL) {
+    y = GROUND_LEVEL;
+    vy = 0;
+    isGrounded = true;
+    isJumping = false;
+  } else {
+    isGrounded = false;
+  }
+
+  // Apply horizontal movement
+  x += vx * delta;
+
+  // Arena bounds
+  x = Math.max(ARENA_LEFT, Math.min(ARENA_RIGHT, x));
+
+  return { ...char, x, y, vx, vy, isGrounded, isJumping };
+}
+
+export function applyPlayerInput(char: Character, keys: KeyState, delta: number): Character {
+  let { vx, vy, isGrounded, isJumping, facing } = char;
 
   // Horizontal movement
   if (keys.left) {
     vx = -MOVE_SPEED;
-    facing = FacingDirection.LEFT;
+    facing = -1;
   } else if (keys.right) {
     vx = MOVE_SPEED;
-    facing = FacingDirection.RIGHT;
+    facing = 1;
   } else {
-    vx = vx * 0.75;
-    if (Math.abs(vx) < 5) vx = 0;
+    vx = 0;
   }
 
   // Jump
-  if (keys.up && isOnGround) {
-    vy = JUMP_FORCE;
-    isOnGround = false;
+  if (keys.up && isGrounded) {
+    vy = JUMP_VELOCITY;
+    isGrounded = false;
+    isJumping = true;
   }
 
-  // Gravity
-  vy += GRAVITY * dt;
-
-  // Position update
-  x += vx * dt;
-  y += vy * dt;
-  // z stays fixed at 0 for side-view
-
-  // Ground collision
-  if (y >= GROUND_LEVEL) {
-    y = GROUND_LEVEL;
-    vy = 0;
-    isOnGround = true;
-  }
-
-  // Wall bounds
-  x = Math.max(WORLD_MIN_X, Math.min(WORLD_MAX_X - player.width, x));
-
-  // Timers
-  if (attackTimer > 0) attackTimer -= dt;
-  if (hitTimer > 0) hitTimer -= dt;
-
-  return { ...player, x, y, z, vx, vy, vz, isOnGround, facing, attackTimer, hitTimer };
+  return { ...char, vx, vy, isGrounded, isJumping, facing };
 }
 
-export function applyAttack(
-  player: Character,
-  keys: KeyState,
-  dt: number
-): Character {
-  let { attackType, attackTimer } = player;
-
-  if (attackTimer <= 0) {
-    if (keys.punch) {
-      attackType = AttackType.PUNCH;
-      attackTimer = 0.35;
-    } else if (keys.kick) {
-      attackType = AttackType.KICK;
-      attackTimer = 0.45;
-    } else {
-      attackType = AttackType.NONE;
-    }
-  }
-
-  return { ...player, attackType, attackTimer };
+export interface AttackHitbox {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
 }
 
-export function getAttackHitbox(char: Character): { x: number; y: number; w: number; h: number } | null {
-  if (char.attackTimer <= 0 || char.attackType === AttackType.NONE) return null;
-
-  const reach = char.attackType === AttackType.PUNCH ? 80 : 100;
-  const offsetX = char.facing === FacingDirection.RIGHT ? char.width : -reach;
-  const offsetY = char.attackType === AttackType.KICK ? char.height * 0.5 : char.height * 0.1;
-  const h = char.attackType === AttackType.KICK ? 50 : 40;
+export function getAttackHitbox(
+  attacker: Character,
+  attackType: 'punch' | 'kick' | 'sword',
+  swordActive?: boolean
+): AttackHitbox {
+  const baseRange = attackType === 'kick' ? 1.2 : 0.9;
+  // Sword extends range significantly
+  const range = swordActive || attackType === 'sword' ? baseRange * 2.2 : baseRange;
+  const height = attackType === 'kick' ? 0.6 : 0.8;
 
   return {
-    x: char.x + offsetX,
-    y: char.y + offsetY,
-    w: reach,
-    h,
+    x: attacker.x + attacker.facing * (range / 2),
+    y: attacker.y + 0.5,
+    width: range,
+    height,
   };
 }
 
@@ -111,5 +87,10 @@ export function rectsOverlap(
   ax: number, ay: number, aw: number, ah: number,
   bx: number, by: number, bw: number, bh: number
 ): boolean {
-  return ax < bx + bw && ax + aw > bx && ay < by + bh && ay + ah > by;
+  return (
+    ax - aw / 2 < bx + bw / 2 &&
+    ax + aw / 2 > bx - bw / 2 &&
+    ay - ah / 2 < by + bh / 2 &&
+    ay + ah / 2 > by - bh / 2
+  );
 }

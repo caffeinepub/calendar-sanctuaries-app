@@ -2,7 +2,6 @@ import React, { useRef, useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { Particle } from '../types/game';
-import { gameToWorld } from './Character3D';
 
 interface ParticleSystem3DProps {
   particles: Particle[];
@@ -10,6 +9,12 @@ interface ParticleSystem3DProps {
 
 const MAX_PARTICLES = 200;
 const HALF = Math.floor(MAX_PARTICLES / 2);
+
+// Convert game-space coordinates to 3D world coordinates.
+// Particles use world-space directly (x in [-4..4], y from 0 upward).
+function particleToWorld(x: number, y: number, z: number): [number, number, number] {
+  return [x, y, z];
+}
 
 // Two instanced meshes: spheres (impact flares) and boxes (sparks)
 const ParticleSystem3D: React.FC<ParticleSystem3DProps> = ({ particles }) => {
@@ -29,7 +34,7 @@ const ParticleSystem3D: React.FC<ParticleSystem3DProps> = ({ particles }) => {
     for (let i = 0; i < count; i++) {
       const p = particles[i];
       const rawAlpha = Math.max(0, p.life / p.maxLife);
-      const [wx, wy, wz] = gameToWorld(p.x, p.y, p.z);
+      const [wx, wy, wz] = particleToWorld(p.x, p.y, p.z);
 
       // Scale-up-then-shrink: peaks at 30% of life, fades out
       const peakAt = 0.7; // life fraction where scale peaks (counting down from maxLife)
@@ -46,7 +51,7 @@ const ParticleSystem3D: React.FC<ParticleSystem3DProps> = ({ particles }) => {
       // Alternate between sphere (even) and box (odd) particles
       const isSphere = i % 2 === 0;
       const meshRef = isSphere ? sphereMeshRef : boxMeshRef;
-      const localIdx = isSphere ? Math.floor(i / 2) : Math.floor(i / 2);
+      const localIdx = Math.floor(i / 2);
 
       if (localIdx >= HALF) continue;
 
@@ -54,12 +59,12 @@ const ParticleSystem3D: React.FC<ParticleSystem3DProps> = ({ particles }) => {
 
       if (isSphere) {
         // Flare: uniform sphere scale
-        const scale = (p.size / 60) * scaleMult * 1.2;
+        const scale = p.size * scaleMult * 1.2;
         dummy.scale.setScalar(scale);
         dummy.rotation.set(0, 0, 0);
       } else {
         // Spark: elongated box oriented along velocity
-        const baseScale = (p.size / 60) * scaleMult;
+        const baseScale = p.size * scaleMult;
         const angle = Math.atan2(p.vy, p.vx);
         dummy.scale.set(baseScale * 3.5, baseScale * 0.5, baseScale * 0.5);
         dummy.rotation.set(0, 0, angle);
@@ -70,10 +75,8 @@ const ParticleSystem3D: React.FC<ParticleSystem3DProps> = ({ particles }) => {
 
       // Cursed-energy color palette: boost saturation
       const baseColor = new THREE.Color(p.color);
-      // Shift hue toward high-saturation cursed energy colors
       const hsl = { h: 0, s: 0, l: 0 };
       baseColor.getHSL(hsl);
-      // Boost saturation and slightly shift toward magenta/gold
       const boostedColor = new THREE.Color().setHSL(
         hsl.h,
         Math.min(1, hsl.s * 1.5 + 0.3),
