@@ -1,12 +1,15 @@
 import React from 'react';
+import { CharacterType, CHARACTER_STATS } from '../types/game';
 
 interface GameHUDProps {
   currentLevel: number;
   maxLevels: number;
   playerHealth: number;
   playerMaxHealth: number;
+  playerCharacterType: CharacterType;
   enemyHealth: number;
   enemyMaxHealth: number;
+  enemyCharacterType: CharacterType;
   score: number;
   swordActive: boolean;
 }
@@ -16,13 +19,18 @@ export default function GameHUD({
   maxLevels,
   playerHealth,
   playerMaxHealth,
+  playerCharacterType,
   enemyHealth,
   enemyMaxHealth,
+  enemyCharacterType,
   score,
   swordActive,
 }: GameHUDProps) {
   const playerHpPct = Math.max(0, (playerHealth / playerMaxHealth) * 100);
   const enemyHpPct = Math.max(0, (enemyHealth / enemyMaxHealth) * 100);
+
+  const playerName = CHARACTER_STATS[playerCharacterType]?.displayName ?? 'Player';
+  const enemyName = CHARACTER_STATS[enemyCharacterType]?.displayName ?? 'Enemy';
 
   const hpColor = (pct: number) =>
     pct > 60
@@ -30,6 +38,24 @@ export default function GameHUD({
       : pct > 30
       ? 'oklch(0.75 0.3 60)'
       : 'oklch(0.6 0.3 25)';
+
+  // Player name color based on character type
+  const playerNameColor: Record<CharacterType, string> = {
+    ug: 'oklch(0.75 0.25 220)',
+    yuji: 'oklch(0.75 0.3 35)',
+    sukuna: 'oklch(0.65 0.3 15)',
+    gojo: 'oklch(0.75 0.3 200)',
+    toji: 'oklch(0.65 0.2 145)',
+  };
+
+  // Enemy name color based on character type
+  const enemyNameColor: Record<CharacterType, string> = {
+    ug: 'oklch(0.75 0.25 220)',
+    yuji: 'oklch(0.75 0.3 35)',
+    sukuna: 'oklch(0.65 0.3 15)',
+    gojo: 'oklch(0.75 0.3 200)',
+    toji: 'oklch(0.65 0.2 145)',
+  };
 
   return (
     <div className="absolute inset-x-0 top-0 z-30 pointer-events-none select-none">
@@ -40,9 +66,9 @@ export default function GameHUD({
           <div className="flex items-center gap-2 mb-1">
             <span
               className="font-display text-sm tracking-widest"
-              style={{ color: 'oklch(0.75 0.25 220)' }}
+              style={{ color: playerNameColor[playerCharacterType] }}
             >
-              UG
+              {playerName}
             </span>
             <span
               className="font-sans text-xs"
@@ -108,9 +134,9 @@ export default function GameHUD({
             </span>
             <span
               className="font-display text-sm tracking-widest"
-              style={{ color: 'oklch(0.65 0.3 15)' }}
+              style={{ color: enemyNameColor[enemyCharacterType] }}
             >
-              SUKUNA
+              {enemyName}
             </span>
           </div>
           <div

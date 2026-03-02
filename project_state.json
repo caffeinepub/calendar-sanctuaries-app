@@ -1,6 +1,6 @@
 {
   "schemaVersion": "1.0.0",
-  "projectStateVersion": 17,
+  "projectStateVersion": 19,
   "summary": "A 3D fighting game where the player controls a character named UG who battles against enemies named Sukuna. The game features on-screen touch/click controls, guns as weapons, multiple levels, and sword weapons.",
   "architectural_notes": [],
   "known_issues": [],
@@ -245,6 +245,30 @@
         "REQ-31"
       ],
       "version": 1
+    },
+    {
+      "id": "feature-add-at-least-2-new-distinct-enemy-character-types-beyond-sukuna-to-the-3d-fighting-game-each-new-enemy-should-have-a-unique-name-distinct-3d-character-mesh-multi-part-articulated-body-using-grouped-meshes-in-character3d-tsx-or-a-new-character-component-unique-color-scheme-and-emissive-material-highlights-and-its-own-set-of-stats-health-speed-attack-damage-attack-range-defined-in-the-level-configuration-in-frontend-src-types-game-ts-new-enemy-types-should-appear-in-later-levels-or-alongside-sukuna-enemies-as-the-levels-progress",
+      "title": "Add at least 2 new distinct enemy character types beyond Sukuna to the 3D fighting game. Each new enemy should have a unique name, distinct 3D character mesh (multi-part articulated body using grouped meshes in Character3D.tsx or a new character component), unique color scheme and emissive material highlights, and its own set of stats (health, speed, attack damage, attack range) defined in the level configuration in frontend/src/types/game.ts. New enemy types should appear in later levels or alongside Sukuna enemies as the levels progress.",
+      "reqIds": [
+        "REQ-32"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-at-least-1-new-playable-character-option-for-the-player-beyond-ug-the-player-should-be-able-to-select-their-character-from-a-simple-character-select-screen-shown-before-the-game-starts-each-playable-character-must-have-a-unique-name-distinct-3d-mesh-with-unique-materials-colors-in-character3d-tsx-and-slightly-different-base-stats-e-g-speed-health-attack-power-reflected-in-the-character-type-in-frontend-src-types-game-ts",
+      "title": "Add at least 1 new playable character option for the player, beyond UG. The player should be able to select their character from a simple character-select screen shown before the game starts. Each playable character must have a unique name, distinct 3D mesh with unique materials/colors in Character3D.tsx, and slightly different base stats (e.g., speed, health, attack power) reflected in the Character type in frontend/src/types/game.ts.",
+      "reqIds": [
+        "REQ-33"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-extend-the-character-interface-and-level-configuration-types-in-frontend-src-types-game-ts-to-support-multiple-character-types-add-a-charactertype-string-field-or-enum-to-the-character-interface-to-differentiate-between-character-variants-e-g-ug-newplayer-sukuna-newenemy1-newenemy2-update-level-configs-or-equivalent-constants-to-specify-which-enemy-types-appear-in-each-level",
+      "title": "Extend the Character interface and level configuration types in frontend/src/types/game.ts to support multiple character types. Add a 'characterType' string field (or enum) to the Character interface to differentiate between character variants (e.g., 'ug', 'newPlayer', 'sukuna', 'newEnemy1', 'newEnemy2'). Update LEVEL_CONFIGS or equivalent constants to specify which enemy types appear in each level.",
+      "reqIds": [
+        "REQ-34"
+      ],
+      "version": 1
     }
   ],
   "new_feature_requests": [
@@ -293,6 +317,12 @@
     {
       "id": "AR-11",
       "summary": "Add sword weapons for the player and/or enemies in the 3D fighting game",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-12",
+      "summary": "Add more playable or enemy characters to the 3D fighting game",
       "reqIds": [],
       "status": "pending"
     }

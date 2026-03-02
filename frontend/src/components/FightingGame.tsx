@@ -1,6 +1,6 @@
 import React, { useRef, useState, useCallback, useEffect } from 'react';
 import { Canvas } from '@react-three/fiber';
-import { GameState, Character, LEVEL_CONFIGS, MAX_LEVELS } from '../types/game';
+import { GameState, Character, LEVEL_CONFIGS, MAX_LEVELS, CharacterType, CHARACTER_STATS } from '../types/game';
 import { useKeyboardControls } from '../hooks/useKeyboardControls';
 import { useGameLoop } from '../hooks/useGameLoop';
 import { applyPhysics, applyPlayerInput } from '../utils/gamePhysics';
@@ -17,6 +17,7 @@ import OnScreenControls from './OnScreenControls';
 import GameHUD from './GameHUD';
 import LevelTransitionScreen from './LevelTransitionScreen';
 import VictoryScreen from './VictoryScreen';
+import CharacterSelectScreen from './CharacterSelectScreen';
 
 const ATTACK_DURATION = 0.35;
 const ATTACK_COOLDOWN = 0.5;
@@ -24,7 +25,8 @@ const HIT_FLASH_DURATION = 0.2;
 const SWORD_ATTACK_DURATION = 0.45;
 const SWORD_COOLDOWN = 0.7;
 
-function createPlayer(): Character {
+function createPlayer(characterType: CharacterType = 'ug'): Character {
+  const stats = CHARACTER_STATS[characterType];
   return {
     id: 'player',
     x: -2,
@@ -33,8 +35,8 @@ function createPlayer(): Character {
     vx: 0,
     vy: 0,
     vz: 0,
-    health: 150,
-    maxHealth: 150,
+    health: stats.health,
+    maxHealth: stats.health,
     facing: 1,
     isAttacking: false,
     attackType: 'none',
@@ -45,11 +47,14 @@ function createPlayer(): Character {
     isBlocking: false,
     swordActive: false,
     swordDamageMultiplier: 1.0,
+    characterType,
   };
 }
 
 function createEnemy(level: number): Character {
   const cfg = LEVEL_CONFIGS.find(c => c.level === level) ?? LEVEL_CONFIGS[0];
+  const enemyType: CharacterType = cfg.enemyTypes[0] ?? 'sukuna';
+  const baseStats = CHARACTER_STATS[enemyType];
   return {
     id: 'enemy',
     x: 2,
@@ -58,8 +63,8 @@ function createEnemy(level: number): Character {
     vx: 0,
     vy: 0,
     vz: 0,
-    health: Math.round(120 * cfg.enemyHealthMultiplier),
-    maxHealth: Math.round(120 * cfg.enemyHealthMultiplier),
+    health: Math.round(baseStats.health * cfg.enemyHealthMultiplier),
+    maxHealth: Math.round(baseStats.health * cfg.enemyHealthMultiplier),
     facing: -1,
     isAttacking: false,
     attackType: 'none',
@@ -70,12 +75,13 @@ function createEnemy(level: number): Character {
     isBlocking: false,
     swordActive: false,
     swordDamageMultiplier: 1.0,
+    characterType: enemyType,
   };
 }
 
-function createInitialState(): GameState {
+function createInitialState(playerType: CharacterType = 'ug'): GameState {
   return {
-    player: createPlayer(),
+    player: createPlayer(playerType),
     enemies: [createEnemy(1)],
     particles: [],
     projectiles: [],
@@ -95,8 +101,14 @@ function createInitialState(): GameState {
   };
 }
 
-export default function FightingGame() {
-  const [gameState, setGameState] = useState<GameState>(createInitialState);
+interface FightingGameProps {
+  onPlayerCharacterChange?: (characterType: CharacterType) => void;
+}
+
+export default function FightingGame({ onPlayerCharacterChange }: FightingGameProps) {
+  const [selectingCharacter, setSelectingCharacter] = useState(true);
+  const [selectedPlayerType, setSelectedPlayerType] = useState<CharacterType>('ug');
+  const [gameState, setGameState] = useState<GameState>(() => createInitialState('ug'));
   const keysRef = useKeyboardControls();
   const stateRef = useRef<GameState>(gameState);
   const attackCooldownRef = useRef(0);
@@ -111,6 +123,18 @@ export default function FightingGame() {
     stateRef.current = gameState;
   }, [gameState]);
 
+  const handleCharacterSelected = useCallback((characterType: CharacterType) => {
+    setSelectedPlayerType(characterType);
+    const fresh = createInitialState(characterType);
+    stateRef.current = fresh;
+    setGameState(fresh);
+    attackCooldownRef.current = 0;
+    enemyAICooldownRef.current = 0;
+    setShowLevelTransition(false);
+    setSelectingCharacter(false);
+    onPlayerCharacterChange?.(characterType);
+  }, [onPlayerCharacterChange]);
+
   const handleLevelTransitionComplete = useCallback(() => {
     setShowLevelTransition(false);
     setGameState(prev => ({
@@ -120,11 +144,8 @@ export default function FightingGame() {
   }, []);
 
   const handleReplay = useCallback(() => {
-    const fresh = createInitialState();
-    stateRef.current = fresh;
-    setGameState(fresh);
-    attackCooldownRef.current = 0;
-    enemyAICooldownRef.current = 0;
+    // Go back to character select
+    setSelectingCharacter(true);
     setShowLevelTransition(false);
   }, []);
 
@@ -165,7 +186,7 @@ export default function FightingGame() {
     const swordKeyPressed = keysRef.current.sword;
     if (swordKeyPressed && attackCooldownRef.current <= 0 && !player.isAttacking) {
       player.isAttacking = true;
-      player.attackType = 'punch'; // use punch hitbox, sword multiplies it
+      player.attackType = 'punch';
       player.attackTimer = SWORD_ATTACK_DURATION;
       player.swordActive = true;
       player.swordDamageMultiplier = 1.0;
@@ -338,18 +359,14 @@ export default function FightingGame() {
       enemiesDefeatedInLevel += updatedEnemies.length;
 
       if (currentLevel >= MAX_LEVELS) {
-        // All levels complete!
         allLevelsComplete = true;
       } else {
-        // Advance to next level
         currentLevel += 1;
         levelTransitioning = true;
-        // Reset enemy for new level
         const newEnemy = createEnemy(currentLevel);
         updatedEnemies.length = 0;
         updatedEnemies.push(newEnemy);
         enemyAICooldownRef.current = 0;
-        // Reset player position
         player.x = -2;
         player.y = 0;
         player.vx = 0;
@@ -358,7 +375,6 @@ export default function FightingGame() {
     }
 
     // ── Game phase ──
-    // Use explicit type to satisfy GameState['gamePhase'] union
     let gamePhase: GameState['gamePhase'] = state.gamePhase;
     if (player.health <= 0) {
       gamePhase = 'playerLost';
@@ -395,7 +411,6 @@ export default function FightingGame() {
 
     stateRef.current = newState;
 
-    // Trigger level transition screen
     if (levelTransitioning) {
       setTransitionLevel(currentLevel);
       setShowLevelTransition(true);
@@ -404,10 +419,10 @@ export default function FightingGame() {
     setGameState(newState);
   }, [keysRef]);
 
-  // No-op render callback — R3F handles its own render loop
   const render = useCallback(() => {}, []);
 
   const isRunning =
+    !selectingCharacter &&
     gameState.gamePhase === 'playing' &&
     !gameState.levelTransitioning &&
     !gameState.allLevelsComplete;
@@ -427,22 +442,29 @@ export default function FightingGame() {
         <Scene3D gameState={gameState} />
       </Canvas>
 
+      {/* Character select screen */}
+      {selectingCharacter && (
+        <CharacterSelectScreen onCharacterSelected={handleCharacterSelected} />
+      )}
+
       {/* HUD overlay */}
-      {gameState.gamePhase === 'playing' && !gameState.allLevelsComplete && (
+      {!selectingCharacter && gameState.gamePhase === 'playing' && !gameState.allLevelsComplete && (
         <GameHUD
           currentLevel={gameState.currentLevel}
           maxLevels={MAX_LEVELS}
           playerHealth={gameState.player.health}
           playerMaxHealth={gameState.player.maxHealth}
+          playerCharacterType={gameState.player.characterType}
           enemyHealth={enemy?.health ?? 0}
           enemyMaxHealth={enemy?.maxHealth ?? 120}
+          enemyCharacterType={enemy?.characterType ?? 'sukuna'}
           score={gameState.score}
           swordActive={gameState.player.swordActive}
         />
       )}
 
       {/* Player damage vignette */}
-      {isPlayerDamaged && (
+      {!selectingCharacter && isPlayerDamaged && (
         <div
           className="absolute inset-0 pointer-events-none z-10"
           style={{
@@ -452,7 +474,7 @@ export default function FightingGame() {
       )}
 
       {/* On-screen controls */}
-      {gameState.gamePhase === 'playing' && !gameState.allLevelsComplete && !showLevelTransition && (
+      {!selectingCharacter && gameState.gamePhase === 'playing' && !gameState.allLevelsComplete && !showLevelTransition && (
         <OnScreenControls keysRef={keysRef} />
       )}
 
@@ -465,12 +487,12 @@ export default function FightingGame() {
       )}
 
       {/* Victory screen */}
-      {(gameState.allLevelsComplete || gameState.gamePhase === 'playerWon') && !showLevelTransition && (
+      {!selectingCharacter && (gameState.allLevelsComplete || gameState.gamePhase === 'playerWon') && !showLevelTransition && (
         <VictoryScreen score={gameState.score} onReplay={handleReplay} />
       )}
 
       {/* Game over screen */}
-      {gameState.gamePhase === 'playerLost' && (
+      {!selectingCharacter && gameState.gamePhase === 'playerLost' && (
         <div
           className="absolute inset-0 z-50 flex flex-col items-center justify-center"
           style={{ background: 'oklch(0.05 0.02 15 / 0.92)' }}
@@ -485,7 +507,7 @@ export default function FightingGame() {
             className="font-sans text-sm tracking-widest mb-6"
             style={{ color: 'oklch(0.5 0.1 15)' }}
           >
-            Sukuna's curse was too strong...
+            {enemy ? `${CHARACTER_STATS[enemy.characterType].displayName}'s power was too great...` : "The enemy was too strong..."}
           </p>
           <p className="font-display text-2xl mb-6" style={{ color: 'oklch(0.7 0.2 45)' }}>
             Score: {gameState.score}
@@ -505,7 +527,7 @@ export default function FightingGame() {
       )}
 
       {/* Controls hint */}
-      {gameState.gamePhase === 'playing' && !showLevelTransition && (
+      {!selectingCharacter && gameState.gamePhase === 'playing' && !showLevelTransition && (
         <div className="absolute bottom-1 left-1/2 -translate-x-1/2 pointer-events-none z-10">
           <p
             className="font-sans text-xs tracking-widest opacity-40"

@@ -2,7 +2,7 @@ import React, { useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { GameState } from '../types/game';
-import { UGCharacter, SukunaCharacter } from './Character3D';
+import { Character3D } from './Character3D';
 import ParticleSystem3D from './ParticleSystem3D';
 
 // ─── Muzzle Flash ─────────────────────────────────────────────────────────────
@@ -44,7 +44,7 @@ function ExplosionMesh({ x, y, z, time, currentTime }: { x: number; y: number; z
 }
 
 // ─── Cursed Energy Aura ───────────────────────────────────────────────────────
-function CursedEnergyAura({ x, y }: { x: number; y: number }) {
+function CursedEnergyAura({ x, y, color = '#FF2200', color2 = '#FF4400' }: { x: number; y: number; color?: string; color2?: string }) {
   const groupRef = useRef<THREE.Group>(null);
   useFrame((_, delta) => {
     if (groupRef.current) {
@@ -55,11 +55,11 @@ function CursedEnergyAura({ x, y }: { x: number; y: number }) {
     <group ref={groupRef} position={[x, y + 0.9, 0]}>
       <mesh>
         <torusGeometry args={[0.55, 0.03, 8, 32]} />
-        <meshBasicMaterial color="#FF2200" transparent opacity={0.6} />
+        <meshBasicMaterial color={color} transparent opacity={0.6} />
       </mesh>
       <mesh rotation={[Math.PI / 2, 0, 0]}>
         <torusGeometry args={[0.65, 0.02, 8, 32]} />
-        <meshBasicMaterial color="#FF4400" transparent opacity={0.4} />
+        <meshBasicMaterial color={color2} transparent opacity={0.4} />
       </mesh>
     </group>
   );
@@ -106,7 +106,6 @@ function ArenaFloor() {
         <planeGeometry args={[12, 6]} />
         <meshStandardMaterial color="#1a0a2e" roughness={0.8} metalness={0.2} />
       </mesh>
-      {/* Grid lines */}
       {[-4, -2, 0, 2, 4].map(x => (
         <mesh key={x} position={[x, 0, 0]} rotation={[-Math.PI / 2, 0, 0]}>
           <planeGeometry args={[0.02, 6]} />
@@ -121,23 +120,30 @@ function ArenaFloor() {
 function ArenaWalls() {
   return (
     <>
-      {/* Back wall */}
       <mesh position={[0, 2, -2.5]}>
         <planeGeometry args={[12, 6]} />
         <meshStandardMaterial color="#0d0520" roughness={1} />
       </mesh>
-      {/* Left wall glow */}
       <mesh position={[-5, 1.5, 0]} rotation={[0, Math.PI / 2, 0]}>
         <planeGeometry args={[5, 4]} />
         <meshBasicMaterial color="#110033" transparent opacity={0.8} />
       </mesh>
-      {/* Right wall glow */}
       <mesh position={[5, 1.5, 0]} rotation={[0, -Math.PI / 2, 0]}>
         <planeGeometry args={[5, 4]} />
         <meshBasicMaterial color="#110033" transparent opacity={0.8} />
       </mesh>
     </>
   );
+}
+
+// ─── Aura color by character type ─────────────────────────────────────────────
+function getAuraColors(characterType: string): [string, string] {
+  switch (characterType) {
+    case 'gojo': return ['#00ccff', '#0088ff'];
+    case 'toji': return ['#00cc44', '#cc2200'];
+    case 'sukuna': return ['#FF2200', '#FF4400'];
+    default: return ['#FF2200', '#FF4400'];
+  }
 }
 
 // ─── Main Scene ───────────────────────────────────────────────────────────────
@@ -149,6 +155,8 @@ export default function Scene3D({ gameState }: Scene3DProps) {
   const { player, enemies, particles, projectiles, explosionEvents } = gameState;
   const enemy = enemies[0];
   const now = gameState.timeElapsed;
+
+  const [auraColor1, auraColor2] = enemy ? getAuraColors(enemy.characterType) : ['#FF2200', '#FF4400'];
 
   return (
     <>
@@ -164,12 +172,12 @@ export default function Scene3D({ gameState }: Scene3DProps) {
       <ArenaWalls />
 
       {/* Characters */}
-      <UGCharacter character={player} isPlayer />
-      {enemy && <SukunaCharacter character={enemy} />}
+      <Character3D character={player} isPlayer />
+      {enemy && <Character3D character={enemy} />}
 
-      {/* Cursed energy aura on Sukuna */}
+      {/* Cursed energy aura on enemy */}
       {enemy && enemy.health > 0 && (
-        <CursedEnergyAura x={enemy.x} y={enemy.y} />
+        <CursedEnergyAura x={enemy.x} y={enemy.y} color={auraColor1} color2={auraColor2} />
       )}
 
       {/* Projectiles */}

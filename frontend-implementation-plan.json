@@ -1,120 +1,95 @@
 {
   "kind": "implementation_plan",
   "version": "1.0",
-  "title": "Add levels and sword weapons to the 3D fighting game",
+  "title": "Add more playable and enemy characters to the 3D fighting game",
   "requirements": [
     {
-      "id": "REQ-29",
-      "summary": "Implement multi-level progression system with at least 3 distinct levels, increasing difficulty, level-transition screens, victory screen, and HUD display of current level number",
+      "id": "REQ-34",
+      "summary": "Extend the Character interface and level configuration types to support multiple character types with a characterType field",
       "acceptanceCriteria": [
-        "The game has at least 3 playable levels with increasing difficulty.",
-        "Defeating all enemies in a level advances the player to the next level.",
-        "A level-transition screen is shown between levels, displaying the current level number.",
-        "Completing all levels shows a final victory screen.",
-        "The current level number is shown in the HUD alongside health bars.",
-        "Enemy count, speed, or strength scales with each level."
+        "The Character interface includes a 'characterType' field that identifies the character variant.",
+        "LEVEL_CONFIGS or equivalent constants specify enemy character types per level.",
+        "The TypeScript types compile without errors.",
+        "Character3D.tsx uses the characterType field to render the correct mesh for each character."
       ],
       "file_operations": [
         {
           "path": "frontend/src/types/game.ts",
           "operation": "modify",
-          "description": "Add currentLevel number field to GameState interface to track the active level. Add levelDifficulty configuration types defining enemy count, speed multiplier, and strength for each level."
+          "description": "Add a 'characterType' string field to the Character interface to differentiate between character variants (e.g., 'ug', 'newPlayer', 'sukuna', 'newEnemy1', 'newEnemy2'). Extend the LEVEL_CONFIGS structure to include an 'enemyTypes' array that specifies which enemy character types appear in each level. Add a new CharacterStats type that defines health, speed, attackDamage, and attackRange for each character type. Create CHARACTER_STATS constant mapping each characterType to its stats."
+        }
+      ]
+    },
+    {
+      "id": "REQ-32",
+      "summary": "Add at least 2 new distinct enemy character types beyond Sukuna to the 3D fighting game",
+      "acceptanceCriteria": [
+        "At least 2 new enemy character types are implemented with unique names (e.g., not 'Sukuna').",
+        "Each new enemy has a visually distinct 3D mesh with its own color scheme and materials.",
+        "Each new enemy has unique stats (health, speed, damage) defined in the game type/config.",
+        "New enemies appear in the game during gameplay (in later levels or mixed with existing enemies).",
+        "New enemies use the existing enemy AI logic (moving toward UG, attacking at close range).",
+        "Health bars in the HUD correctly reflect the active enemy's name and health."
+      ],
+      "file_operations": [
+        {
+          "path": "frontend/src/components/Character3D.tsx",
+          "operation": "modify",
+          "description": "Add two new enemy character rendering variants with distinct 3D meshes. Create 'Gojo' enemy using cyan/blue color scheme with white emissive highlights and a taller, slimmer body structure. Create 'Toji' enemy using dark green/black color scheme with red emissive highlights and a bulkier body structure. Update the character rendering logic to check the character.characterType field and render the appropriate mesh (UG, Sukuna, Gojo, or Toji) with their unique materials and colors. Each new enemy should use grouped meshes similar to the existing Sukuna structure."
         },
         {
           "path": "frontend/src/components/FightingGame.tsx",
           "operation": "modify",
-          "description": "Add level progression logic that initializes currentLevel at 1, tracks enemies defeated per level, and advances to the next level when all enemies are cleared. Configure enemy spawn parameters (count, speed, strength) based on currentLevel using difficulty scaling rules. Trigger level-transition and victory screens at appropriate times. Integrate the LevelTransitionScreen and VictoryScreen components into the render tree with conditional visibility based on game state."
-        },
-        {
-          "path": "frontend/src/components/LevelTransitionScreen.tsx",
-          "operation": "create",
-          "description": "Create a React component that displays a full-screen overlay showing the current level number during level transitions. Use a fade-in/fade-out animation and auto-dismiss after 2-3 seconds to resume gameplay. Style with theme-consistent colors and typography from index.css."
-        },
-        {
-          "path": "frontend/src/components/VictoryScreen.tsx",
-          "operation": "create",
-          "description": "Create a React component that displays a full-screen victory overlay when all levels are completed. Show congratulatory text, final stats (if available), and a replay or return-to-menu button. Style with emissive glow effects and fighting-game theme colors."
-        },
-        {
-          "path": "frontend/src/components/GameHUD.tsx",
-          "operation": "create",
-          "description": "Create a React component that renders the in-game HUD overlay, displaying the current level number alongside existing health bars for UG and enemies. Position the level indicator in the top-center or top-left of the screen using absolute positioning. Use consistent typography and color scheme from index.css."
-        },
-        {
-          "path": "frontend/src/components/Scene3D.tsx",
-          "operation": "modify",
-          "description": "Integrate the GameHUD component into the scene render tree so the level number is visible during gameplay. Ensure the HUD overlay renders above the 3D canvas without obscuring critical gameplay elements."
+          "description": "Update enemy creation logic to use the characterType field from LEVEL_CONFIGS. When spawning enemies, assign the appropriate characterType from the level configuration's enemyTypes array. Ensure enemy stats (health, speed, attackDamage) are applied from CHARACTER_STATS based on the enemy's characterType. Update level progression logic to spawn enemies with the character types specified in LEVEL_CONFIGS for each level."
         },
         {
           "path": "frontend/src/utils/enemyAI.ts",
           "operation": "modify",
-          "description": "Add support for per-enemy speed and strength multipliers based on the current level difficulty. Accept level-scaled parameters (moveSpeed, attackDamage) and apply them during state transitions and attack calculations. Ensure backward compatibility with existing AI behavior."
+          "description": "Update enemy AI logic to use character-specific stats from the character.characterType field. Ensure attack range, speed, and damage values are read from the character's assigned stats rather than hardcoded values. The AI behavior (movement toward player, attack at close range) should work consistently for all enemy types."
+        },
+        {
+          "path": "frontend/src/components/GameHUD.tsx",
+          "operation": "modify",
+          "description": "Update the HUD to display the active enemy's name based on their characterType field. Map characterType strings to display names (e.g., 'sukuna' → 'Sukuna', 'gojo' → 'Gojo', 'toji' → 'Toji'). Ensure the enemy health bar correctly reflects the current enemy's name and health percentage."
         }
       ]
     },
     {
-      "id": "REQ-30",
-      "summary": "Add sword weapon for UG with dedicated keyboard key (E) and on-screen SWORD button, rendering a 3D sword mesh in UG's hand, increasing melee range and damage, and displaying a sword slash visual effect during attacks",
+      "id": "REQ-33",
+      "summary": "Add at least 1 new playable character option with a character selection screen before the game starts",
       "acceptanceCriteria": [
-        "UG can activate a sword attack using a dedicated keyboard key (e.g., 'E').",
-        "A 3D sword mesh is rendered in UG's hand when the sword attack is triggered.",
-        "The sword attack deals more damage and/or has greater range than default melee attacks.",
-        "A visible sword slash arc or sweep emissive effect appears during the attack animation.",
-        "A SWORD button is added to the OnScreenControls overlay and triggers the sword attack on tap/click with mousedown/mouseup and touchstart/touchend support.",
-        "The sword attack integrates with the existing combat and hit-detection systems, causing Sukuna to lose health on a successful sword hit."
+        "A character selection screen is displayed before the game begins with at least 2 playable characters (UG + at least 1 new character).",
+        "Each playable character has a unique name and visually distinct 3D mesh.",
+        "Each playable character has distinct base stats (health, speed, attack power) in the game types.",
+        "The selected character is used as the player character throughout the game session.",
+        "The HUD correctly displays the selected player character's name and health bar.",
+        "All existing controls (keyboard + on-screen buttons) function correctly for the new playable character(s)."
       ],
       "file_operations": [
         {
-          "path": "frontend/src/types/game.ts",
-          "operation": "modify",
-          "description": "Add 'sword' boolean field to KeyState interface to track sword attack input. Add swordActive boolean and swordDamageMultiplier number fields to the Character interface to represent sword weapon state."
-        },
-        {
-          "path": "frontend/src/hooks/useKeyboardControls.ts",
-          "operation": "modify",
-          "description": "Extend keyboard event listeners to track the 'E' key state and map it to the 'sword' field in the returned KeyState ref. Ensure the sword key is handled with the same press/release pattern as existing action keys."
-        },
-        {
-          "path": "frontend/src/components/OnScreenControls.tsx",
-          "operation": "modify",
-          "description": "Add a SWORD button to the on-screen controls overlay following the same mousedown/mouseup and touchstart/touchend event pattern as existing buttons (punch, kick, gun). Position the button in a logical location within the controls layout. Use an appropriate SVG icon or label for the sword action. Update the KeyState ref when the button is pressed/released."
+          "path": "frontend/src/components/CharacterSelectScreen.tsx",
+          "operation": "create",
+          "description": "Create a character selection screen component that displays before the game starts. Show at least 2 playable character options: UG (original) and a new character named 'Yuji'. Display each character option with their name, a visual preview (colored box or simple 3D preview), and their base stats (health, speed, attack power). Provide a 'Select' button for each character. When a character is selected, call an onCharacterSelected callback passing the selected characterType ('ug' or 'yuji'). Style the screen with dark theme consistent with the existing game UI."
         },
         {
           "path": "frontend/src/components/Character3D.tsx",
           "operation": "modify",
-          "description": "Add a 3D sword mesh (e.g., a long thin box or cylinder with an emissive blade material) as a child of UG's hand or arm mesh. The sword should only be visible when the character's swordActive flag is true. Include a SwordSlashEffect component that renders an arc or sweep emissive geometry during the sword attack animation, positioned relative to the sword mesh. Use React Three Fiber's useFrame or animation state to trigger the slash visual when the sword attack is active."
+          "description": "Add a new playable character rendering variant for 'Yuji' with a distinct 3D mesh using red/orange color scheme with yellow emissive highlights and a medium-build body structure. Update the character rendering logic to handle the 'yuji' characterType alongside 'ug'. Ensure the sword mesh and attack animations work correctly for both playable character types."
         },
         {
           "path": "frontend/src/components/FightingGame.tsx",
           "operation": "modify",
-          "description": "Add logic to handle the sword key state from KeyState ref. When the sword key is pressed, set the player character's swordActive flag to true and trigger a sword attack animation. Pass the swordActive state and swordDamageMultiplier to the combat system for hit detection and damage calculation. Ensure the sword attack respects existing attack cooldowns and animation timing."
+          "description": "Add state to track whether the character selection phase is active and which playable character was selected. Initially show the CharacterSelectScreen component before starting the game. When a character is selected via the callback, store the selected characterType and transition to the game. Update player character creation to use the selected characterType and apply the corresponding stats from CHARACTER_STATS. Ensure the selected character persists throughout the entire game session."
         },
         {
-          "path": "frontend/src/utils/combatSystem.ts",
+          "path": "frontend/src/components/GameHUD.tsx",
           "operation": "modify",
-          "description": "Extend melee hit detection logic to check if the player's swordActive flag is true. If a sword attack is active, increase the attack hitbox range and apply the swordDamageMultiplier to the base damage. Ensure the sword attack triggers the same hit particles, knockback, and damage flash effects as existing melee attacks. Maintain compatibility with the existing combatSystem interface."
+          "description": "Update the HUD to display the player character's name based on their characterType field. Map characterType strings to display names (e.g., 'ug' → 'UG', 'yuji' → 'Yuji'). Ensure the player health bar shows the correct character name throughout the game."
         },
         {
-          "path": "frontend/src/utils/gamePhysics.ts",
+          "path": "frontend/src/App.tsx",
           "operation": "modify",
-          "description": "Update the attack hitbox calculation utility to accept an optional swordActive flag. When the sword is active, extend the hitbox range (e.g., 1.5x or 2x the default melee range) to reflect the sword's longer reach. Ensure the extended hitbox integrates cleanly with the existing rectangle overlap detection."
-        }
-      ]
-    },
-    {
-      "id": "REQ-31",
-      "summary": "Extend TypeScript type definitions in game.ts to include 'sword' boolean in KeyState, 'currentLevel' number in GameState, and sword-attack state fields (swordActive, swordDamageMultiplier) in Character interface",
-      "acceptanceCriteria": [
-        "KeyState includes a 'sword' boolean field.",
-        "GameState or equivalent top-level state includes a 'currentLevel' number field.",
-        "Character interface includes a swordActive flag or equivalent sword-attack state.",
-        "All existing usages of KeyState and Character remain type-safe after the additions."
-      ],
-      "file_operations": [
-        {
-          "path": "frontend/src/types/game.ts",
-          "operation": "modify",
-          "description": "Add 'sword: boolean' field to the KeyState interface. Add 'currentLevel: number' field to the GameState interface. Add 'swordActive: boolean' and 'swordDamageMultiplier: number' fields to the Character interface. Ensure all new fields are properly typed and integrate cleanly with existing type definitions without breaking type-safety in consuming code."
+          "description": "Update the header to display 'UG vs SUKUNA' as the default title, but allow it to reflect the selected playable character if a new character is chosen (e.g., 'YUJI vs SUKUNA'). This can be achieved by passing the selected player characterType as a prop to the header or by managing it in App state."
         }
       ]
     }

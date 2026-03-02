@@ -1,7 +1,7 @@
 {
   "kind": "coverage_report",
   "version": "1.0",
-  "generatedAt": "2026-03-02T02:15:45.250Z",
+  "generatedAt": "2026-03-02T02:26:05.982Z",
   "sources": {
     "buildRequest": true,
     "implementationPlan": true
@@ -11,54 +11,43 @@
     "implemented": 3,
     "items": [
       {
-        "id": "REQ-29",
-        "summary": "Implement a multi-level progression system in the 3D fighting game. The game should have at least 3 distinct levels/stages. Each level should increase in difficulty (e.g., more Sukuna enemies, faster/stronger enemies, or more enemies simultaneously). After defeating all enemies in a level, the player advances to the next level with a brief level-transition screen displaying the level number. Completing all levels triggers a final victory screen. The current level number should be displayed in the game HUD alongside the existing health bars.",
+        "id": "REQ-32",
+        "summary": "Add at least 2 new distinct enemy character types beyond Sukuna to the 3D fighting game. Each new enemy should have a unique name, distinct 3D character mesh (multi-part articulated body using grouped meshes in Character3D.tsx or a new character component), unique color scheme and emissive material highlights, and its own set of stats (health, speed, attack damage, attack range) defined in the level configuration in frontend/src/types/game.ts. New enemy types should appear in later levels or alongside Sukuna enemies as the levels progress.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/types/game.ts",
+          "frontend/src/components/Character3D.tsx",
           "frontend/src/components/FightingGame.tsx",
-          "frontend/src/components/LevelTransitionScreen.tsx",
-          "frontend/src/components/VictoryScreen.tsx",
-          "frontend/src/components/GameHUD.tsx",
-          "frontend/src/components/Scene3D.tsx",
-          "frontend/src/utils/enemyAI.ts"
+          "frontend/src/utils/enemyAI.ts",
+          "frontend/src/components/GameHUD.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/types/game.ts",
+          "frontend/src/components/Character3D.tsx",
           "frontend/src/components/FightingGame.tsx",
-          "frontend/src/components/LevelTransitionScreen.tsx",
-          "frontend/src/components/VictoryScreen.tsx",
-          "frontend/src/components/GameHUD.tsx",
-          "frontend/src/components/Scene3D.tsx",
-          "frontend/src/utils/enemyAI.ts"
+          "frontend/src/components/GameHUD.tsx"
         ]
       },
       {
-        "id": "REQ-30",
-        "summary": "Add a sword weapon for UG in the 3D fighting game. UG should be able to equip and use a sword via a dedicated key (e.g., 'E' on keyboard). When the sword is active, UG's melee attack range and damage are increased compared to the default punch/kick. The sword should be rendered as a 3D mesh (e.g., a long, thin box or cylinder with an emissive blade material) visibly held in UG's hand. A sword slash visual effect (arc or sweep emissive geometry) should appear during the attack animation. The sword attack should also be triggerable via a new on-screen SWORD button in the OnScreenControls overlay, following the same mousedown/mouseup and touchstart/touchend pattern as existing buttons.",
+        "id": "REQ-33",
+        "summary": "Add at least 1 new playable character option for the player, beyond UG. The player should be able to select their character from a simple character-select screen shown before the game starts. Each playable character must have a unique name, distinct 3D mesh with unique materials/colors in Character3D.tsx, and slightly different base stats (e.g., speed, health, attack power) reflected in the Character type in frontend/src/types/game.ts.",
         "status": "implemented",
         "plannedFiles": [
-          "frontend/src/types/game.ts",
-          "frontend/src/hooks/useKeyboardControls.ts",
-          "frontend/src/components/OnScreenControls.tsx",
+          "frontend/src/components/CharacterSelectScreen.tsx",
           "frontend/src/components/Character3D.tsx",
           "frontend/src/components/FightingGame.tsx",
-          "frontend/src/utils/combatSystem.ts",
-          "frontend/src/utils/gamePhysics.ts"
+          "frontend/src/components/GameHUD.tsx",
+          "frontend/src/App.tsx"
         ],
         "matchedFiles": [
-          "frontend/src/types/game.ts",
-          "frontend/src/hooks/useKeyboardControls.ts",
-          "frontend/src/components/OnScreenControls.tsx",
+          "frontend/src/components/CharacterSelectScreen.tsx",
           "frontend/src/components/Character3D.tsx",
           "frontend/src/components/FightingGame.tsx",
-          "frontend/src/utils/combatSystem.ts",
-          "frontend/src/utils/gamePhysics.ts"
+          "frontend/src/components/GameHUD.tsx",
+          "frontend/src/App.tsx"
         ]
       },
       {
-        "id": "REQ-31",
-        "summary": "Extend the KeyState and GameState type definitions in frontend/src/types/game.ts to include a 'sword' boolean key for the new sword attack input, a 'currentLevel' number field in game state, and any necessary sword-attack state (e.g., swordActive flag, swordDamageMultiplier) on the Character interface, so the levels and sword systems integrate cleanly with existing TypeScript types.",
+        "id": "REQ-34",
+        "summary": "Extend the Character interface and level configuration types in frontend/src/types/game.ts to support multiple character types. Add a 'characterType' string field (or enum) to the Character interface to differentiate between character variants (e.g., 'ug', 'newPlayer', 'sukuna', 'newEnemy1', 'newEnemy2'). Update LEVEL_CONFIGS or equivalent constants to specify which enemy types appear in each level.",
         "status": "implemented",
         "plannedFiles": [
           "frontend/src/types/game.ts"
@@ -74,20 +63,13 @@
     "feature_evidence.json",
     "frontend-file-summaries.txt",
     "frontend-implementation-plan.json",
+    "frontend/src/App.tsx",
     "frontend/src/components/Character3D.tsx",
+    "frontend/src/components/CharacterSelectScreen.tsx",
     "frontend/src/components/FightingGame.tsx",
     "frontend/src/components/GameHUD.tsx",
-    "frontend/src/components/LevelTransitionScreen.tsx",
-    "frontend/src/components/OnScreenControls.tsx",
-    "frontend/src/components/ParticleSystem3D.tsx",
     "frontend/src/components/Scene3D.tsx",
-    "frontend/src/components/VictoryScreen.tsx",
-    "frontend/src/hooks/useKeyboardControls.ts",
-    "frontend/src/index.css",
     "frontend/src/types/game.ts",
-    "frontend/src/utils/combatSystem.ts",
-    "frontend/src/utils/enemyAI.ts",
-    "frontend/src/utils/gamePhysics.ts",
     "project_state.json",
     "scratch/component-selection.json",
     "spec.md",
